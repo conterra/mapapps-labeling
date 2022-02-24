@@ -1,0 +1,166 @@
+{
+    "load": {
+        "bundleLocations": [
+            "localbundles",
+            "bundles"
+        ],
+        "allowedBundles": [
+            "system",
+            "console",
+            "notifier",
+            "splashscreen",
+            "templatelayout",
+            "template-seasons",
+            "theme-autumn",
+            "map-init",
+            "map-preload-2D",
+            "toolset",
+            "toolrules",
+            "banner",
+            "mapnavigation",
+            "popups-default",
+            "scalebar",
+            "locateme",
+            "parameter-url",
+            "search-ui",
+            "locator-store",
+            "toc",
+            "printing",
+            "dn_labeling"
+        ]
+    },
+    "bundles": {
+        "dn_labeling": {
+            "hoverSymbol": {
+                "type": "simple-marker",
+                "style": "circle",
+                "color": "red",
+                "size": "10px",
+                "outline": {
+                    "width": 0
+                }
+            },
+            "textSymbol": {
+                "type": "text",
+                "haloColor": "white",
+                "haloSize": "2px",
+                "font": {
+                    "size": 12
+                }
+            },
+            "layerId": "kreise",
+            "subLayerId": 0,
+            "lengthUnit": "meters",
+            "generalization": {
+                "maxDeviationUnit": "meters",
+                "maxDeviation": 0.5,
+                "removeDegenerateParts": true
+            }
+        },
+        "banner": {
+            "BannerWidget": {
+                "label": "Developer Network",
+                "image": "resource('${app}:/images/logo_conterra.png')",
+                "imageWidth": 200,
+                "imagePosition": "above",
+                "link": "http://developernetwork.conterra.de"
+            }
+        },
+        "map-init": {
+            "Config": {
+                "basemaps": [
+                    {
+                        "id": "esri_street",
+                        "title": "Straßenkarte (grau)",
+                        "thumbnailUrl": "resource('${app}:/images/streets.png')",
+                        "selected": true,
+                        "basemap": "gray-vector"
+                    }
+                ],
+                "map": {
+                    "layers": [
+                        {
+                            "title": "Kreise",
+                            "id": "kreise",
+                            "type": "AGS_FEATURE",
+                            "url": "https://services.conterra.de/arcgis/rest/services/common/grenzen/FeatureServer/1",
+                            "definitionExpression": "land_nr = 5"
+                        }
+                    ]
+                },
+                "view": {
+                    "viewmode": "2D",
+                    "center": {
+                        "x": 825186.7831257742,
+                        "y": 6707522.714837288,
+                        "spatialReference": 3857
+                    },
+                    "scale": 2311162.2171545
+                }
+            }
+        },
+        "toc": {
+            "Config": {
+                "showBasemaps": true,
+                "showLayerLegend": true
+            }
+        },
+        "toolset": {
+            "ToolsetManager": {
+                "toolsets": [
+                    {
+                        "id": "mapview_tools",
+                        "tools": [
+                            "labelingToggleTool",
+                            "locateMeTool",
+                            "zoomInTool",
+                            "zoomOutTool",
+                            "compassTool",
+                            "restoreInitialViewTool"
+                        ],
+                        "registerWidget": {
+                            "widgetRole": "mapview_tools"
+                        },
+                        "container": "ignore",
+                        "windowType": "container",
+                        "cssClass": "muted",
+                        "tooltipPositions": [
+                            "before",
+                            "above",
+                            "below",
+                            "after"
+                        ]
+                    },
+                    {
+                        "id": "drawer_left",
+                        "title": "Werkzeuge",
+                        "cssClass": "ct-main-app-menu",
+                        "tools": [
+                            "tocToggleTool",
+                            "printingToggleTool"
+                        ],
+                        "registerWidget": {
+                            "widgetRole": "drawer_button"
+                        },
+                        "container": "ignore",
+                        "windowType": "drawer_left",
+                        "tooltipPositions": [
+                            "after",
+                            "above",
+                            "below",
+                            "before"
+                        ]
+                    }
+                ]
+            }
+        }
+//        },
+//        "toolrules": {
+//            "ToolActiveStateManager": {
+//                "activateOnStartToolIds": [
+//                    "labelingToggleTool"
+//                ]
+//            }
+//        }
+    }
+}

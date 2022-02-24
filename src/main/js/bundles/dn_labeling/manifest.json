@@ -1,0 +1,111 @@
+{
+	"name": "dn_labeling",
+	"version": "1.0.0-SNAPSHOT",
+    "title": "${bundleName}",
+    "description": "${bundleDescription}",
+	"vendor": "con terra GmbH",
+    "keywords": [
+        "labeling"
+    ],
+    "icon": {},
+    "license": {},
+    "productName": "devnet-mapapps-labeling",
+    "dependencies": {},
+	"layout-widgets": [
+		{
+			"widgetRole": "labelingWidget",
+			"window": {
+				"title": "Labeling Tool",
+				"dockTool": "labelingToggleTool",
+                "closable": true,
+                "maximizable": false,
+                "minimizeOnClose": true,
+                "resizable": true,
+				"closeOnEscape": false,
+				"marginBox": {
+					"w": 350,
+					"h": 500,
+					"t": 135,
+					"l": 20
+				},
+				"minSize": {
+					"w": 350,
+					"h": 400
+				}
+			}
+		}
+	],
+	"components": [
+		{
+			"name": "LabelingModel",
+			"provides": ["labeling.LabelingModel"],
+			"properties": {
+				"hoverSymbol": {
+					"type": "simple-marker",
+					"style": "circle",
+					"color": "red",
+					"size": "10px",
+					"outline": {
+						"width": 0
+					}
+				},
+				"textSymbol": {
+					"type": "text",
+					"haloColor": "white",
+					"haloSize": "2px",
+					"font": {
+						"size": 12
+					}
+				},
+				"layerId": "kreise",
+				"subLayerId": 0,
+				"lengthUnit": "meters",
+				"generalization": {
+					"maxDeviationUnit": "meters",
+					"maxDeviation": 0.5,
+					"removeDegenerateParts": true
+				}
+			},
+			"references": [
+				{
+					"name": "_labelingTool",
+					"providing": "ct.tools.Tool",
+					"cardinality": "1..1",
+					"filter": "(id=labelingToggleTool)"
+				},
+				{
+					"name": "_mapWidgetModel",
+					"providing": "map-widget.MapWidgetModel"
+				}
+			]
+		},
+		{
+			"name": "LabelingWidgetFactory",
+			"provides": ["dijit.Widget"],
+			"instanceFactory": true,
+			"properties": {
+				"widgetRole": "labelingWidget"
+			},
+			"references": [
+				{
+					"name": "model",
+					"providing": "labeling.LabelingModel"
+				}
+			]
+		},
+		{
+			"name": "LabelingTool",
+			"impl": "ct/tools/Tool",
+			"provides" : ["ct.tools.Tool"],
+			"propertiesConstructor": true,
+			"properties": {
+				"id": "labelingToggleTool",
+				"title": "Labeling Tool",
+				"tooltip": "Labeling Tool",
+				"iconClass": "icon-ruler",
+				"toolRole": "toolset",
+				"togglable": true
+			}
+		}
+	]
+}
