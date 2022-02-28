@@ -1,6 +1,6 @@
 {
 	"name": "dn_labeling",
-	"version": "1.0.0-SNAPSHOT",
+	"version": "1.0.1-SNAPSHOT",
     "title": "${bundleName}",
     "description": "${bundleDescription}",
 	"vendor": "con terra GmbH",
@@ -57,7 +57,7 @@
 						"size": 12
 					}
 				},
-				"layerId": "kreise",
+				"layerId": "flur_ham",
 				"subLayerId": 0,
 				"lengthUnit": "meters",
 				"generalization": {

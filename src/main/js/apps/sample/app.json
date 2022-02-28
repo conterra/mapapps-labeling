@@ -48,7 +48,7 @@
                     "size": 12
                 }
             },
-            "layerId": "kreise",
+            "layerId": "flur_ham",
             "subLayerId": 0,
             "lengthUnit": "meters",
             "generalization": {
@@ -80,22 +80,21 @@
                 "map": {
                     "layers": [
                         {
-                            "title": "Kreise",
-                            "id": "kreise",
+                            "title": "Flurstücke Hamburg",
+                            "id": "flur_ham",
                             "type": "AGS_FEATURE",
-                            "url": "https://services.conterra.de/arcgis/rest/services/common/grenzen/FeatureServer/1",
-                            "definitionExpression": "land_nr = 5"
+                            "url": "https://services2.arcgis.com/jUpNdisbWqRpMo35/ArcGIS/rest/services/Geb%C3%A4ude_Hamburg/FeatureServer/0"
                         }
                     ]
                 },
                 "view": {
                     "viewmode": "2D",
                     "center": {
-                        "x": 825186.7831257742,
-                        "y": 6707522.714837288,
+                        "x": 1112681.4313048492,
+                        "y": 7085414.719942773,
                         "spatialReference": 3857
                     },
-                    "scale": 2311162.2171545
+                    "scale": 18055.9548215
                 }
             }
         },
