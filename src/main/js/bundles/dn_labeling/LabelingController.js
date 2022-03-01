@@ -21,14 +21,14 @@ import Point from "esri/geometry/Point";
 import request from 'apprt-request';
 import EdgeLengthLabelCreator from "./EdgeLengthLabelCreator";
 
-export default declare({
+export default class LabelingController {
 
-    _labels: [],
-    _hoverGraphic: null,
-    _showFeatureEdgeLengths: true,
+    _labels = [];
+    _hoverGraphic = null;
+    _showFeatureEdgeLengths = true;
 
-    layerFields: [],
-    fieldLabels: [],
+    layerFields = [];
+    fieldLabels = [];
 
 
     activate() {
@@ -51,19 +51,19 @@ export default declare({
         });
 
         this._labelingTool.watch("active", this._handleToolStateChange.bind(this));
-    },
+    }
 
     _getLayer() {
         let layer = this._mapWidgetModel.map.findLayerById(this._layerId);
         return layer;
-    },
+    }
 
     _setFieldsFromLayer() {
         let layer = this._mapWidgetModel.map.findLayerById(this._layerId);
         layer.when(_ => {
             this.layerFields = layer.fields.map(clone);
         });
-    },
+    }
 
     _setFieldsFromSubLayer(layer) {
         if (!layer.fields) {
@@ -71,13 +71,13 @@ export default declare({
         } else {
             this.layerFields = layer.fields.map(clone);
         }
-    },
+    }
 
     _setFieldsFromMetadata(layer) {
         request.get(layer.url, {query: {f: "json"}}).then(
             metadata => this.layerFields = metadata.fields.map(clone)
         );
-    },
+    }
 
     _handleToolStateChange() {
         if (this._labelingTool.active) {
@@ -85,34 +85,32 @@ export default declare({
         } else {
             this._deactivateFeatureSelection();
         }
-    },
+    }
 
     _activateFeatureSelection() {
         let view = this._mapWidgetModel.view;
         if (!this.draw)
             this.draw = new Draw({view});
         this._activateDrawing();
-    },
-
+    }
 
     _deactivateFeatureSelection() {
         this._stopDrawing();
-    },
-
+    }
 
     _activateDrawing() {
         this.draw.reset();
         this.drawAction = this.draw.create("point");
         this.drawAction.on("cursor-update", this._drawHoverGraphic.bind(this));
         this.drawAction.on("draw-complete", this._findFeatureAndAddLabels.bind(this));
-    },
+    }
 
 
     _stopDrawing() {
         this.draw.reset();
         this.drawAction = null;
         this._deleteHoverGraphic();
-    },
+    }
 
 
     _drawHoverGraphic({coordinates}) {
@@ -134,14 +132,14 @@ export default declare({
         view.graphics.remove(this._hoverGraphic);
         this._hoverGraphic = graphic;
         view.graphics.add(this._hoverGraphic);
-    },
+    }
 
 
     _deleteHoverGraphic() {
         let view = this._mapWidgetModel.view;
         view.graphics.remove(this._hoverGraphic);
         this._hoverGraphic = null;
-    },
+    }
 
 
     _findFeatureAndAddLabels({coordinates}) {
@@ -161,7 +159,7 @@ export default declare({
         queryParams.outFields = ["*"];
 
         layer.queryFeatures(queryParams).then(this._addLabelsToFoundFeature.bind(this))
-    },
+    }
 
 
     _addLabelsToFoundFeature(result) {
@@ -177,7 +175,7 @@ export default declare({
             this._lengthLabelCreator.getEdgeLengthLabels(feature)
                 .then(labels => labels.forEach(this._addLabelToMap.bind(this)));
         }
-    },
+    }
 
 
     _addFieldLabelsToFeature(feature) {
@@ -202,35 +200,35 @@ export default declare({
         let graphic = new Graphic({symbol, geometry: center});
 
         this._addLabelToMap(graphic);
-    },
+    }
 
     _addLabelToMap(graphic) {
         this._labels.push(graphic);
         this._mapWidgetModel.view.graphics.add(graphic);
 
-    },
+    }
 
     deleteLabels() {
         for (let graphic of this._labels)
             this._mapWidgetModel.view.graphics.remove(graphic);
-    },
+    }
 
     setShowFeatureEdgeLengths(showFeatureEdgeLengths) {
         this._showFeatureEdgeLengths = showFeatureEdgeLengths;
-    },
+    }
 
     addLabelDefinition({name, alias}) {
         let id = Date.now();
         let prefix = alias + ": ";
         let postfix = "";
         this.fieldLabels.push({id, name, alias, prefix, postfix});
-    },
+    }
 
     editLabelDefinition({id, prefix, postfix}) {
         let label = this.fieldLabels.find(label => label.id === id);
         label.prefix = prefix;
         label.postfix = postfix;
-    },
+    }
 
     removeLabelDefinition(id) {
         let index = this.fieldLabels.findIndex(labelDef => labelDef.id === id);
@@ -238,7 +236,16 @@ export default declare({
             this.fieldLabels.splice(index, 1);
         }
     }
-});
+
+    activateSelection() {
+        console.info("activate")
+    }
+
+    deactivateSelection() {
+        console.info("deactivate")
+    }
+
+};
 
 function clone(feature) {
     let clone = {};
