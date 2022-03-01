@@ -17,11 +17,13 @@
 -->
 <template>
     <v-layout column fill-height>
-        <v-flex shrink row justify-space-around>
+        <v-flex row shrink justify-space-around>
             <v-btn block class="success" @click="handleSelectionActivation">Auswahl aktivieren</v-btn>
             <v-btn block class="error" @click="handleSelectionDeactivation">Auswahl deaktivieren</v-btn>
-
         </v-flex>
+
+        <v-divider class="mt-2 mb-3"></v-divider>
+
         <v-flex shrink>
             <v-layout row>
                 <span>Umring bemaßen</span>
@@ -29,6 +31,7 @@
                             color="primary"></v-checkbox>
             </v-layout>
         </v-flex>
+
         <v-divider class="mt-2 mb-3"></v-divider>
 
         <v-layout column>
