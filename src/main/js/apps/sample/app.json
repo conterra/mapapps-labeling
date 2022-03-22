@@ -153,13 +153,5 @@
                 ]
             }
         }
-//        },
-//        "toolrules": {
-//            "ToolActiveStateManager": {
-//                "activateOnStartToolIds": [
-//                    "labelingToggleTool"
-//                ]
-//            }
-//        }
     }
 }

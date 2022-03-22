@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {declare} from "apprt-core/Mutable";
 import {whenDefinedOnce} from "esri/core/watchUtils";
 import Draw from "esri/views/draw/Draw";

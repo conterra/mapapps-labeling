@@ -10,7 +10,14 @@
     "icon": {},
     "license": {},
     "productName": "devnet-mapapps-labeling",
-    "dependencies": {},
+    "CSS-Themes-Extension": [
+        {
+            "name": "*",
+            "files": [
+                "./css/styles.css"
+            ]
+        }
+    ],
 	"layout-widgets": [
 		{
 			"widgetRole": "labelingWidget",
@@ -23,13 +30,13 @@
                 "resizable": true,
 				"closeOnEscape": false,
 				"marginBox": {
-					"w": 350,
+					"w": 385,
 					"h": 500,
 					"t": 135,
 					"l": 20
 				},
 				"minSize": {
-					"w": 350,
+					"w": 385,
 					"h": 400
 				}
 			}
@@ -45,8 +52,8 @@
             },
             "references": [
                 {
-                    "name": "_controller",
-                    "providing": "labeling.LabelingController"
+                    "name": "model",
+                    "providing": "labeling.LabelingModel"
                 }
             ]
         },
@@ -94,7 +101,7 @@
 			]
 		},
 		{
-			"name": "LabelingToggleTool",
+			"name": "LabelingTool",
 			"impl": "ct/tools/Tool",
 			"provides" : ["ct.tools.Tool"],
 			"propertiesConstructor": true,

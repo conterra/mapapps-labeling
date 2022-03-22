@@ -16,51 +16,71 @@
 
 -->
 <template>
-    <v-layout column fill-height>
-        <v-flex row shrink justify-space-around>
-            <v-btn block class="success" @click="handleSelectionActivation">Auswahl aktivieren</v-btn>
-            <v-btn block class="error" @click="handleSelectionDeactivation">Auswahl deaktivieren</v-btn>
-        </v-flex>
-
-        <v-divider class="mt-2 mb-3"></v-divider>
-
-        <v-flex shrink>
-            <v-layout row>
-                <span>Umring bemaßen</span>
-                <v-checkbox v-model="showFeatureEdgeLengths" class="shrink pt-0 mt-0 ml-2" hide-details
-                            color="primary"></v-checkbox>
-            </v-layout>
-        </v-flex>
-
-        <v-divider class="mt-2 mb-3"></v-divider>
-
+    <v-container fill-height pa-0>
         <v-layout column>
-            <h4>Beschriftung festlegen</h4>
-            <v-layout shrink row>
-                <v-autocomplete :items="layerFields" v-model="selectedField" item-text="alias" return-object single-line
-                                label="Attribut zur Beschriftung hinzufügen" hide-details
-                                class="pt-0 mt-0"></v-autocomplete>
-                <v-btn @click="handleFieldAdditionClick" :disabled="disableAddButton" icon small dark color="primary">
-                    <v-icon>add</v-icon>
+
+            <v-flex column fill-height id="labeling-options">
+                <h4>Beschriftung festlegen</h4>
+                <v-switch
+                    class="controls circumference-switch"
+                    color="primary"
+                    v-model="showFeatureEdgeLengths"
+                    label="Kantenlängen beschriften"
+                >
+                </v-switch>
+                <v-layout column>
+                    <v-layout shrink row>
+                        <v-autocomplete :items="layerFields" v-model="selectedField" item-text="alias" return-object single-line
+                                        label="Attribut zur Beschriftung hinzufügen" hide-details
+                                        class="pt-0 mt-0"></v-autocomplete>
+                        <v-btn @click="handleFieldAdditionClick" :disabled="disableAddButton" icon small dark color="primary">
+                            <v-icon>add</v-icon>
+                        </v-btn>
+                    </v-layout>
+                    <v-flex grow style="overflow-y: auto;">
+                        <v-list id="labeling-options-list">
+                            <label-definition-widget v-for="label in fieldLabels" :key="label.id" :name="label.alias"
+                                                     :id="label.id" :initial-prefix="label.prefix"
+                                                     :initial-postfix="label.postfix"
+                                                     v-on:delete-label-definition="handleLabelDefinitionDeletion"
+                                                     v-on:edit-label="handleLabelEdit">
+                            </label-definition-widget>
+                        </v-list>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+
+            <v-flex shrink>
+                <v-btn @click="handleDeleteAllLabelsClick" block color="primary" class="ma-0">Alle Beschriftungen
+                    Löschen
                 </v-btn>
-            </v-layout>
-            <v-flex grow style="overflow-y: auto; height: 0;">
-                <v-list>
-                    <label-definition-widget v-for="label in fieldLabels" :key="label.id" :name="label.alias"
-                                             :id="label.id" :initial-prefix="label.prefix"
-                                             :initial-postfix="label.postfix"
-                                             v-on:delete-label-definition="handleLabelDefinitionDeletion"
-                                             v-on:edit-label="handleLabelEdit">
-                    </label-definition-widget>
-                </v-list>
+            </v-flex>
+
+
+            <!-- Divider -->
+            <v-divider class="mt-2 mb-3"></v-divider>
+
+            <!-- Activate/Deactivate Buttons -->
+
+            <v-flex column justify-space-around align-center>
+                <div>
+                    <v-btn
+                        class="success"
+                        @click="handleSelectionActivation"
+                    >
+                        Auswahl aktivieren
+                    </v-btn>
+                    <v-btn
+                        class="error"
+                        @click="handleSelectionDeactivation"
+                    >
+                        Auswahl deaktivieren
+                    </v-btn>
+                </div>
             </v-flex>
         </v-layout>
 
-        <v-flex shrink>
-            <v-btn @click="handleDeleteAllLabelsClick" block color="primary" class="ma-0">Alle Beschriftungen Löschen
-            </v-btn>
-        </v-flex>
-    </v-layout>
+    </v-container>
 </template>
 <script>
 
@@ -106,6 +126,7 @@ export default {
         handleLabelEdit(event) {
             this.$emit("edit-label", event);
         },
+
         handleSelectionActivation() {
             this.$emit("activate-selection");
         },
