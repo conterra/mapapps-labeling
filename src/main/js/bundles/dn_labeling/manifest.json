@@ -1,6 +1,6 @@
 {
 	"name": "dn_labeling",
-	"version": "1.0.0-SNAPSHOT",
+	"version": "1.0.1-SNAPSHOT",
     "title": "${bundleName}",
     "description": "${bundleDescription}",
 	"vendor": "con terra GmbH",
@@ -10,7 +10,14 @@
     "icon": {},
     "license": {},
     "productName": "devnet-mapapps-labeling",
-    "dependencies": {},
+    "CSS-Themes-Extension": [
+        {
+            "name": "*",
+            "files": [
+                "./css/styles.css"
+            ]
+        }
+    ],
 	"layout-widgets": [
 		{
 			"widgetRole": "labelingWidget",
@@ -23,19 +30,33 @@
                 "resizable": true,
 				"closeOnEscape": false,
 				"marginBox": {
-					"w": 350,
+					"w": 385,
 					"h": 500,
 					"t": 135,
 					"l": 20
 				},
 				"minSize": {
-					"w": 350,
+					"w": 385,
 					"h": 400
 				}
 			}
 		}
 	],
 	"components": [
+        {
+            "name": "LabelingWidgetFactory",
+            "provides": ["dijit.Widget"],
+            "instanceFactory": true,
+            "properties": {
+                "widgetRole": "labelingWidget"
+            },
+            "references": [
+                {
+                    "name": "model",
+                    "providing": "labeling.LabelingModel"
+                }
+            ]
+        },
 		{
 			"name": "LabelingModel",
 			"provides": ["labeling.LabelingModel"],
@@ -57,7 +78,7 @@
 						"size": 12
 					}
 				},
-				"layerId": "kreise",
+				"layerId": "flur_ham",
 				"subLayerId": 0,
 				"lengthUnit": "meters",
 				"generalization": {
@@ -76,20 +97,6 @@
 				{
 					"name": "_mapWidgetModel",
 					"providing": "map-widget.MapWidgetModel"
-				}
-			]
-		},
-		{
-			"name": "LabelingWidgetFactory",
-			"provides": ["dijit.Widget"],
-			"instanceFactory": true,
-			"properties": {
-				"widgetRole": "labelingWidget"
-			},
-			"references": [
-				{
-					"name": "model",
-					"providing": "labeling.LabelingModel"
 				}
 			]
 		},

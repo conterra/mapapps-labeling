@@ -37,6 +37,8 @@ export default class LabelingWidgetFactory {
         vueComponent.$on("add-field-label", model.addLabelDefinition.bind(model));
         vueComponent.$on("delete-label-definition", model.removeLabelDefinition.bind(model));
         vueComponent.$on("edit-label", model.editLabelDefinition.bind(model));
+        vueComponent.$on("activate-selection", model._activateFeatureSelection.bind(model));
+        vueComponent.$on("deactivate-selection", model._deactivateFeatureSelection.bind(model));
 
         widget[binding] = Binding.for(vueComponent, model)
             .syncAllToLeft("layerFields", "fieldLabels")
