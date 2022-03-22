@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 import ".";
-import "./LabelingModel";
+import "./LabelingController";
 import "./LabelingWidgetFactory";

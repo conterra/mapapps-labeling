@@ -126,6 +126,7 @@ export default {
         handleLabelEdit(event) {
             this.$emit("edit-label", event);
         },
+
         handleSelectionActivation() {
             this.$emit("activate-selection");
         },

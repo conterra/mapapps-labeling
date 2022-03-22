@@ -58,8 +58,8 @@
             ]
         },
 		{
-			"name": "LabelingModel",
-			"provides": ["labeling.LabelingModel"],
+			"name": "LabelingController",
+			"provides": ["labeling.LabelingController"],
 			"properties": {
 				"hoverSymbol": {
 					"type": "simple-marker",

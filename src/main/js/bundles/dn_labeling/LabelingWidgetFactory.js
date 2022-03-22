@@ -24,9 +24,7 @@ const binding = Symbol("binding");
 export default class LabelingWidgetFactory {
 
     createInstance(){
-
-        let model = this.model;
-
+        let controller = this._controller;
         let vueComponent = new Vue(LabelingWidget);
         let widget = VueDijit(vueComponent, {class: "fullHeight"});
 
@@ -40,7 +38,7 @@ export default class LabelingWidgetFactory {
         vueComponent.$on("activate-selection", model._activateFeatureSelection.bind(model));
         vueComponent.$on("deactivate-selection", model._deactivateFeatureSelection.bind(model));
 
-        widget[binding] = Binding.for(vueComponent, model)
+        widget[binding] = Binding.for(vueComponent, controller)
             .syncAllToLeft("layerFields", "fieldLabels")
             .enable()
             .syncToLeftNow();
