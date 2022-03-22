@@ -30,13 +30,13 @@ export default class LabelingWidgetFactory {
 
         vueComponent.i18n = this._i18n.get();
 
-        vueComponent.$on("delete-all-labels", model.deleteLabels.bind(model));
-        vueComponent.$on("set-show-edge-lengths", model.setShowFeatureEdgeLengths.bind(model));
-        vueComponent.$on("add-field-label", model.addLabelDefinition.bind(model));
-        vueComponent.$on("delete-label-definition", model.removeLabelDefinition.bind(model));
-        vueComponent.$on("edit-label", model.editLabelDefinition.bind(model));
-        vueComponent.$on("activate-selection", model._activateFeatureSelection.bind(model));
-        vueComponent.$on("deactivate-selection", model._deactivateFeatureSelection.bind(model));
+        vueComponent.$on("delete-all-labels", controller.deleteLabels.bind(controller));
+        vueComponent.$on("set-show-edge-lengths", controller.setShowFeatureEdgeLengths.bind(controller));
+        vueComponent.$on("add-field-label", controller.addLabelDefinition.bind(controller));
+        vueComponent.$on("delete-label-definition", controller.removeLabelDefinition.bind(controller));
+        vueComponent.$on("edit-label", controller.editLabelDefinition.bind(controller));
+        vueComponent.$on("activate-selection", controller._activateFeatureSelection.bind(controller));
+        vueComponent.$on("deactivate-selection", controller._deactivateFeatureSelection.bind(controller));
 
         widget[binding] = Binding.for(vueComponent, controller)
             .syncAllToLeft("layerFields", "fieldLabels")

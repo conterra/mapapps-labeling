@@ -52,8 +52,8 @@
             },
             "references": [
                 {
-                    "name": "model",
-                    "providing": "labeling.LabelingModel"
+                    "name": "_controller",
+                    "providing": "labeling.LabelingController"
                 }
             ]
         },
