@@ -101,7 +101,7 @@
 			]
 		},
 		{
-			"name": "LabelingTool",
+			"name": "LabelingToggleTool",
 			"impl": "ct/tools/Tool",
 			"provides" : ["ct.tools.Tool"],
 			"propertiesConstructor": true,
