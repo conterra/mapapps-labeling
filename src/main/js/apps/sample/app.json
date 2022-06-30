@@ -40,30 +40,32 @@
     },
     "bundles": {
         "dn_labeling": {
-            "hoverSymbol": {
-                "type": "simple-marker",
-                "style": "circle",
-                "color": "red",
-                "size": "10px",
-                "outline": {
-                    "width": 0
+            "LabelingController": {
+                "hoverSymbol": {
+                    "type": "simple-marker",
+                    "style": "circle",
+                    "color": "red",
+                    "size": "10px",
+                    "outline": {
+                        "width": 0
+                    }
+                },
+                "textSymbol": {
+                    "type": "text",
+                    "haloColor": "white",
+                    "haloSize": "2px",
+                    "font": {
+                        "size": 12
+                    }
+                },
+                "layerId": "flur_ham",
+                "subLayerId": 0,
+                "lengthUnit": "meters",
+                "generalization": {
+                    "maxDeviationUnit": "meters",
+                    "maxDeviation": 0.5,
+                    "removeDegenerateParts": true
                 }
-            },
-            "textSymbol": {
-                "type": "text",
-                "haloColor": "white",
-                "haloSize": "2px",
-                "font": {
-                    "size": 12
-                }
-            },
-            "layerId": "flur_ham",
-            "subLayerId": 0,
-            "lengthUnit": "meters",
-            "generalization": {
-                "maxDeviationUnit": "meters",
-                "maxDeviation": 0.5,
-                "removeDegenerateParts": true
             }
         },
         "banner": {
