@@ -9,7 +9,7 @@ https://demos.conterra.de/mapapps/resources/apps/downloads_labeling/index.html
 
 ## Installation Guide
 **Requirements:**
-- map.apps 4.9.0 or later
+- map.apps 4.13.0 or later
 
 Simply add the bundle "dn_labeling" to your app.
 
