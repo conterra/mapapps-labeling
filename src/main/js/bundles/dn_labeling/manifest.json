@@ -109,7 +109,7 @@
 				"id": "labelingToggleTool",
 				"title": "Labeling Tool",
 				"tooltip": "Labeling Tool",
-				"iconClass": "icon-ruler",
+				"iconClass": "esri-icon-labels",
 				"toolRole": "toolset",
 				"togglable": true
 			}
