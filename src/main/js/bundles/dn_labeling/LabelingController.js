@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 con terra GmbH (info@conterra.de)
+ * Copyright (C) 2022 con terra GmbH (info@conterra.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ export default declare({
         });
 
         whenDefinedOnce(this._mapWidgetModel, "map", () => {
-            this._setFieldsFromLayer()
+            this._setFieldsFromLayer();
         });
 
         this._labelingTool.watch("active", this._handleToolStateChange.bind(this));
