@@ -1,4 +1,7 @@
 {
+    "properties": {
+        "title": "${apptitle}"
+    },
     "load": {
         "bundleLocations": [
             "localbundles",
@@ -27,6 +30,12 @@
             "toc",
             "printing",
             "dn_labeling"
+        ],
+        "require": [
+            "${app}.app"
+        ],
+        "i18n": [
+            "bundle"
         ]
     },
     "bundles": {
