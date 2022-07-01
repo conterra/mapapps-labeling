@@ -2,7 +2,7 @@
 
 The Labeling Bundle labels features with border length and optional additional attributes.
 
-![Screenshot App](https://github.com/conterra/mapapps-labeling/blob/master/screenshot.JPG)
+![Screenshot App](https://github.com/conterra/mapapps-labeling/blob/main/screenshot.JPG)
 
 ## Sample App
 https://demos.conterra.de/mapapps/resources/apps/downloads_labeling/index.html
