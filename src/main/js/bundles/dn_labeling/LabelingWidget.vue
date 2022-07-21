@@ -51,6 +51,10 @@
             </v-flex>
 
             <v-flex shrink>
+                <v-btn @click="handleLabelAllClick" block color="primary">Alle Features beschriften
+                </v-btn>
+            </v-flex>
+            <v-flex shrink>
                 <v-btn @click="handleDeleteAllLabelsClick" block color="primary" class="ma-0">Alle Beschriftungen
                     Löschen
                 </v-btn>
@@ -110,6 +114,9 @@ export default {
     },
 
     methods: {
+        handleLabelAllClick(){
+            this.$emit("label-all-features");
+        },
         handleDeleteAllLabelsClick() {
             this.$emit("delete-all-labels");
         },

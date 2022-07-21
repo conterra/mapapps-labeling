@@ -207,7 +207,6 @@ export default declare({
     _addLabelToMap(graphic) {
         this._labels.push(graphic);
         this._mapWidgetModel.view.graphics.add(graphic);
-
     },
 
     deleteLabels() {
@@ -237,6 +236,26 @@ export default declare({
         if (index !== -1) {
             this.fieldLabels.splice(index, 1);
         }
+    },
+
+    labelAllFeatures(){
+        let layer = this._getLayer();
+        let queryParams = layer.createQuery();
+        queryParams.where = "1=1";
+        queryParams.outFields = ["*"];
+
+        layer.queryFeatures(queryParams).then(response => {
+            const features = response.features;
+            features.forEach(feature => {
+                this._addFieldLabelsToFeature(feature);
+
+                if (this._showFeatureEdgeLengths) {
+                    this._lengthLabelCreator.getEdgeLengthLabels(feature)
+                        .then(labels => labels.forEach(this._addLabelToMap.bind(this)));
+                }
+                console.info(feature.attributes.OBJECTID);
+            });
+        });
     }
 });
 

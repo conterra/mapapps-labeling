@@ -29,6 +29,7 @@ export default class LabelingWidgetFactory {
 
         vueComponent.i18n = this._i18n.get();
 
+        vueComponent.$on("label-all-features", controller.labelAllFeatures.bind(controller));
         vueComponent.$on("delete-all-labels", controller.deleteLabels.bind(controller));
         vueComponent.$on("set-show-edge-lengths", controller.setShowFeatureEdgeLengths.bind(controller));
         vueComponent.$on("add-field-label", controller.addLabelDefinition.bind(controller));
