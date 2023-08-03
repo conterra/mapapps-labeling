@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022 con terra GmbH (info@conterra.de)
+ * Copyright (C) 2023 con terra GmbH (info@conterra.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ctAppRoot .circumference-switch {
-    padding-left: 6px
+.v-select__selections{
+    display: grid !important;
 }
 
-.ctAppRoot #labeling-options-list b {
-    font-size: 1rem !important;
+.v-chip{
+    width: 100% !important;
+}
+
+.v-chip__content{
+    width: 100% !important;
+    padding: 0px !important;
+}
+
+.v-btn--icon{
+    margin: 0px !important;
+}
+
+#editText{
+    padding: 15px !important;
+}
+
+#iconRight{
+    float:  right !important;
 }
