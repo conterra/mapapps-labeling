@@ -18,25 +18,61 @@
 <template>
     <v-layout column>
         <v-layout row>
-            <b style="display: inline-flex;align-items: center;font-size: 1.3em;">{{name}}</b>
-            <v-spacer></v-spacer>
-            <v-btn @click="handleEdit" :dark="edit" icon small dark color="primary">
+            <b style="display: inline-flex;align-items: center;font-size: 1.3em;"> {{ name }} </b>
+            <v-spacer />
+            <v-btn
+                :dark="edit"
+                icon
+                small
+                color="primary"
+                @click="handleEdit"
+            >
                 <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn @click="handleDeletion" icon small dark color="primary">
+            <v-btn
+                icon
+                small
+                dark
+                color="primary"
+                @click="handleDeletion"
+            >
                 <v-icon>delete</v-icon>
             </v-btn>
         </v-layout>
-        <v-layout column v-show="edit">
+        <v-layout
+            v-show="edit"
+            column
+        >
             <v-layout row>
-                <v-text-field v-model="prefix" label="Präfix" hide-details class="mt-2 mb-2 pt-0"></v-text-field>
+                <v-text-field
+                    v-model="prefix"
+                    label="Präfix"
+                    hide-details
+                    class="mt-2 mb-2 pt-0"
+                />
             </v-layout>
             <v-layout row>
-                <v-text-field v-model="postfix" label="Postfix" hide-details class="mt-2 mb-2 pt-0"></v-text-field>
+                <v-text-field
+                    v-model="postfix"
+                    label="Postfix"
+                    hide-details
+                    class="mt-2 mb-2 pt-0"
+                />
             </v-layout>
             <v-layout row>
-                <v-btn @click="handleSave" block color="primary">Speichern</v-btn>
-                <v-btn @click="handleCancel" block>Abbrechen</v-btn>
+                <v-btn
+                    block
+                    color="primary"
+                    @click="handleSave"
+                >
+                    Speichern
+                </v-btn>
+                <v-btn
+                    block
+                    @click="handleCancel"
+                >
+                    Abbrechen
+                </v-btn>
             </v-layout>
         </v-layout>
     </v-layout>
@@ -44,36 +80,31 @@
 
 <script>
     export default {
+        props: {
+            name:{
+                type: String,
+                default: ""
+            },
+            id: {
+                type: Number,
+                default: undefined
+            },
+            initialPrefix:{
+                type: String,
+                default: ""
+            },
+            initialPostfix:{
+                type: String,
+                default: ""
+            }
+
+        },
         data: function(){
             return {
                 edit: false,
                 prefix: null,
                 postfix: null
-            }
-        },
-        props: {
-            name: String,
-            id: Number,
-            initialPrefix: String,
-            initialPostfix: String
-        },
-        methods: {
-            handleDeletion(){
-                this.$emit("delete-label-definition", this.id);
-            },
-            handleEdit(){
-                this.edit = !this.edit;
-            },
-            handleCancel(){
-                this.edit = false;
-            },
-            handleSave(){
-                let id = this.id;
-                let prefix = this.prefix;
-                let postfix = this.postfix;
-
-                this.$emit("edit-label", {id, prefix, postfix});
-            }
+            };
         },
         watch: {
             edit(){
@@ -88,6 +119,24 @@
             initialPostfix(){
                 this.postfix = this.initialPostfix;
             }
+        },
+        methods: {
+            handleDeletion(){
+                this.$emit("delete-label-definition", this.id);
+            },
+            handleEdit(){
+                this.edit = !this.edit;
+            },
+            handleCancel(){
+                this.edit = false;
+            },
+            handleSave(){
+                const id = this.id;
+                const prefix = this.prefix;
+                const postfix = this.postfix;
+
+                this.$emit("edit-label", {id, prefix, postfix});
+            }
         }
-    }
+    };
 </script>

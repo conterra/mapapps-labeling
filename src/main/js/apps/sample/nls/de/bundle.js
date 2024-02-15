@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 module.exports = {
-    apptitle: "Beschriftung Sample",
+    apptitle: "Beschriftung Sample"
 };

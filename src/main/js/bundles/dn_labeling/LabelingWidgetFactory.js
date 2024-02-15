@@ -16,16 +16,16 @@
 import Vue from "apprt-vue/Vue";
 import VueDijit from "apprt-vue/VueDijit";
 import LabelingWidget from "./LabelingWidget.vue";
-import Binding from "apprt-binding/Binding"
+import Binding from "apprt-binding/Binding";
 
 const binding = Symbol("binding");
 
 export default class LabelingWidgetFactory {
 
     createInstance(){
-        let controller = this._controller;
-        let vueComponent = new Vue(LabelingWidget);
-        let widget = VueDijit(vueComponent, {class: "fullHeight"});
+        const controller = this._controller;
+        const vueComponent = new Vue(LabelingWidget);
+        const widget = VueDijit(vueComponent, {class: "fullHeight"});
 
         vueComponent.i18n = this._i18n.get();
 

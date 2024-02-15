@@ -15,7 +15,7 @@
  */
 module.exports = {
     root: {
-        apptitle: "Labeling Sample",
+        apptitle: "Labeling Sample"
     },
     "de": true
 };

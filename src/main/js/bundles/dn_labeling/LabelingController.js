@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import {declare} from "apprt-core/Mutable";
-//import {whenDefinedOnce} from "esri/core/watchUtils";
-import reactiveUtils, {whenDefinedOnce} from "esri/core/reactiveUtils";
+import {whenOnce} from "esri/core/reactiveUtils";
 import Draw from "esri/views/draw/Draw";
 import Graphic from "esri/Graphic";
 import Point from "esri/geometry/Point";
@@ -47,7 +46,7 @@ export default declare({
             generalizationConfig: this._generalizationConfig
         });
 
-        reactiveUtils.whenOnce(
+        whenOnce(
             () => this._mapWidgetModel.map)
             .then(() => {
                 this._setFieldsFromLayer();
