@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 con terra GmbH (info@conterra.de)
+ * Copyright (C) 2023 con terra GmbH (info@conterra.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {declare} from "apprt-core/Mutable";
-import {whenDefinedOnce} from "esri/core/watchUtils";
+import {whenOnce} from "esri/core/reactiveUtils";
 import Draw from "esri/views/draw/Draw";
 import Graphic from "esri/Graphic";
 import Point from "esri/geometry/Point";
@@ -46,20 +46,22 @@ export default declare({
             generalizationConfig: this._generalizationConfig
         });
 
-        whenDefinedOnce(this._mapWidgetModel, "map", () => {
-            this._setFieldsFromLayer();
-        });
+        whenOnce(
+            () => this._mapWidgetModel.map)
+            .then(() => {
+                this._setFieldsFromLayer();
+            });
 
         this._labelingTool.watch("active", this._handleToolStateChange.bind(this));
     },
 
     _getLayer() {
-        let layer = this._mapWidgetModel.map.findLayerById(this._layerId);
+        const layer = this._mapWidgetModel.map.findLayerById(this._layerId);
         return layer;
     },
 
     _setFieldsFromLayer() {
-        let layer = this._mapWidgetModel.map.findLayerById(this._layerId);
+        const layer = this._mapWidgetModel.map.findLayerById(this._layerId);
         layer.when(_ => {
             this.layerFields = layer.fields.map(clone);
         });
@@ -88,7 +90,7 @@ export default declare({
     },
 
     _activateFeatureSelection() {
-        let view = this._mapWidgetModel.view;
+        const view = this._mapWidgetModel.view;
         if (!this.draw)
             this.draw = new Draw({view});
         this._activateDrawing();
@@ -117,16 +119,16 @@ export default declare({
 
     _drawHoverGraphic({coordinates}) {
 
-        let view = this._mapWidgetModel.view;
+        const view = this._mapWidgetModel.view;
 
-        let point = {
+        const point = {
             type: "point",
             x: coordinates[0],
             y: coordinates[1],
             spatialReference: view.spatialReference
         };
 
-        let graphic = new Graphic({
+        const graphic = new Graphic({
             geometry: point,
             symbol: this._hoverSymbol
         });
@@ -138,7 +140,7 @@ export default declare({
 
 
     _deleteHoverGraphic() {
-        let view = this._mapWidgetModel.view;
+        const view = this._mapWidgetModel.view;
         view.graphics.remove(this._hoverGraphic);
         this._hoverGraphic = null;
     },
@@ -149,18 +151,18 @@ export default declare({
         // Resets the drawing, but doesnt disable it, since labeling is done via toggle tool
         this._activateDrawing();
 
-        let x = coordinates[0];
-        let y = coordinates[1];
-        let spatialReference = this._mapWidgetModel.view.spatialReference;
-        let point = new Point({x, y, spatialReference});
+        const x = coordinates[0];
+        const y = coordinates[1];
+        const spatialReference = this._mapWidgetModel.view.spatialReference;
+        const point = new Point({x, y, spatialReference});
 
-        let layer = this._getLayer();
+        const layer = this._getLayer();
 
-        let queryParams = layer.createQuery();
+        const queryParams = layer.createQuery();
         queryParams.geometry = point;
         queryParams.outFields = ["*"];
 
-        layer.queryFeatures(queryParams).then(this._addLabelsToFoundFeature.bind(this))
+        layer.queryFeatures(queryParams).then(this._addLabelsToFoundFeature.bind(this));
     },
 
 
@@ -169,7 +171,7 @@ export default declare({
         if (result.features.length === 0)
             return;
 
-        let feature = result.features[0];
+        const feature = result.features[0];
 
         this._addFieldLabelsToFeature(feature);
 
@@ -182,24 +184,24 @@ export default declare({
 
     _addFieldLabelsToFeature(feature) {
 
-        let attributes = feature.attributes;
-        let labelStrings = [];
-        for (let labelDef of this.fieldLabels) {
-            let attributeName = labelDef.name;
-            let attributeValue = attributes[attributeName];
-            let value = attributeValue ? attributeValue : "";
-            let label = labelDef.prefix + " " + value + " " + labelDef.postfix;
+        const attributes = feature.attributes;
+        const labelStrings = [];
+        for (const labelDef of this.fieldLabels) {
+            const attributeName = labelDef.name;
+            const attributeValue = attributes[attributeName];
+            const value = attributeValue ? attributeValue : "";
+            const label = labelDef.prefix + " " + value + " " + labelDef.postfix;
             labelStrings.push(label);
         }
 
-        let labelString = labelStrings.join("\n");
+        const labelString = labelStrings.join("\n");
 
-        let symbol = Object.assign({}, this._textSymbol);
+        const symbol = Object.assign({}, this._textSymbol);
         symbol.text = labelString;
 
-        let geometry = feature.geometry;
-        let center = geometry.centroid;
-        let graphic = new Graphic({symbol, geometry: center});
+        const geometry = feature.geometry;
+        const center = geometry.centroid;
+        const graphic = new Graphic({symbol, geometry: center});
 
         this._addLabelToMap(graphic);
     },
@@ -211,7 +213,7 @@ export default declare({
     },
 
     deleteLabels() {
-        for (let graphic of this._labels)
+        for (const graphic of this._labels)
             this._mapWidgetModel.view.graphics.remove(graphic);
     },
 
@@ -220,20 +222,20 @@ export default declare({
     },
 
     addLabelDefinition({name, alias}) {
-        let id = Date.now();
-        let prefix = alias + ": ";
-        let postfix = "";
+        const id = Date.now();
+        const prefix = alias + ": ";
+        const postfix = "";
         this.fieldLabels.push({id, name, alias, prefix, postfix});
     },
 
     editLabelDefinition({id, prefix, postfix}) {
-        let label = this.fieldLabels.find(label => label.id === id);
+        const label = this.fieldLabels.find(label => label.id === id);
         label.prefix = prefix;
         label.postfix = postfix;
     },
 
     removeLabelDefinition(id) {
-        let index = this.fieldLabels.findIndex(labelDef => labelDef.id === id);
+        const index = this.fieldLabels.findIndex(labelDef => labelDef.id === id);
         if (index !== -1) {
             this.fieldLabels.splice(index, 1);
         }
@@ -241,8 +243,8 @@ export default declare({
 });
 
 function clone(feature) {
-    let clone = {};
-    for (let key in feature) {
+    const clone = {};
+    for (const key in feature) {
         if (feature.hasOwnProperty(key))
             clone[key] = feature[key];
     }
