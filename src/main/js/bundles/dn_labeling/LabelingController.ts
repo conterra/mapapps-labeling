@@ -14,107 +14,100 @@
 /// limitations under the License.
 ///
 
-import type { InjectedReference } from "apprt-core/InjectedReference";
 import Graphic from "esri/Graphic";
 import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
-import EdgeLengthLabelCreator from "./EdgeLengthLabelCreator";
+import LabelCreator from "./LabelCreator";
 
-export default class {
+import type { InjectedReference } from "apprt-core/InjectedReference";
+import LabelingModel from "./LabelingModel";
+import { MapWidgetModel } from "map-widget/api";
 
-    private _labelingModel: InjectedReference<any>;
-    private _mapWidgetModel: InjectedReference<any>;
-    private _hoverGraphic: InjectedReference<Graphic>;
-    private _draw: InjectedReference<Draw>;
-    private _lengthLabelCreator: InjectedReference<any>;
-    private _fieldLabels: Array<any>;
-    private _edgeLabels: Array<any>;
+export default class LabelingController {
 
+    private drawAction: any; // TODO Typing
+    private _labelingModel: InjectedReference<typeof LabelingModel>;
+    private hoverGraphic?: Graphic;
+    private draw?: Draw;
+    private labelCreator?: LabelCreator;
+    private _fieldLabels: Array<any> = [];
+    private _edgeLabels: Array<any> = [];
 
+    private _mapWidgetModel: InjectedReference<MapWidgetModel>;
 
-    activate() {
-        const _labelingModel = this._labelingModel;
-        this._fieldLabels= [];
-        this._edgeLabels = [];
+    public activate(): void {
+        const model = this._labelingModel;
 
-        this._hoverSymbol = this._properties.hoverSymbol;
-        this._textSymbol = this._properties.textSymbol;
-        this._generalizationConfig = this._properties.generalization;
-        this._lengthUnit = this._properties.lengthUnit;
+        // TODO: InjectedReference -> Default class
+        this.labelCreator = new LabelCreator(this._mapWidgetModel, model.generalizationConfig,
+            model.textSymbol, model.lengthUnit );
 
-        this._lengthLabelCreator = new EdgeLengthLabelCreator({
-            textSymbol: this._textSymbol,
-            lengthUnit: this._lengthUnit,
-            mapWidgetModel: this._mapWidgetModel,
-            generalizationConfig: this._generalizationConfig
-        });
+        const layers = this._mapWidgetModel.map.layers.items.filter((layer: __esri.Layer) => layer.title);
+        model.layers = layers;
+        model.selectedLayer = layers[0];
 
-
-        const layers= this._mapWidgetModel.map.layers.items.filter(item => item.title);
-        this._labelingModel.layers= layers;
-        this._labelingModel.selectedLayer= layers[0];
-        layers[0].when(() => {
-            const fields = layers[0].fields;
-            fields.forEach((_, index) => {
-                if (!fields[index].prefix){
-                fields[index].prefix =  fields[index].name + ": ";
+        model.selectedLayer.when(() => {
+            const fields = model.selectedLayer.fields;
+            fields.forEach((field: __esri.Field, index: number) => {
+                if (!fields[index].prefix) {
+                    fields[index].prefix = `${fields[index].name}: `;
                 }
-                if (!fields[index].postfix){
-                    fields[index].postfix =  "";
+                if (!fields[index].postfix) {
+                    fields[index].postfix = "";
                 }
-            this._labelingModel.fields= fields;
-          });
+                model.fields = fields;
+            });
         });
 
-
-        _labelingModel.watch("active", ({ value }) => {
-           if(value){
-            this._activateFeatureSelection();
-           }
-           else{
-            this._deactivateDrawing();
-           }
+        // TODO: Typing of value
+        model.watch("active", ({ value }) => {
+            if (value) {
+                this.activateFeatureSelection();
+            }
+            else {
+                this.deactivateDrawing();
+            }
         });
 
-        _labelingModel.watch("selectedLayer", ({ value }) => {
+        // TODO: Typing of value
+        model.watch("selectedLayer", ({ value }) => {
             const fields = value.fields;
-            fields.forEach((_, index) => {
-                if (!fields[index].prefix){
-                fields[index].prefix =  fields[index].name + ": ";
+            fields.forEach((field: __esri.Field, index: number) => {
+                if (!fields[index].prefix) {
+                    fields[index].prefix = `${fields[index].name}: `;
                 }
-                if (!fields[index].postfix){
-                    fields[index].postfix =  "";
+                if (!fields[index].postfix) {
+                    fields[index].postfix = "";
                 }
             });
-            this._labelingModel.fields= fields;
-
-            this._labelingModel.selectedFields = [];
-         });
-        }
-
-    _activateFeatureSelection() {
-            const view = this._mapWidgetModel.view;
-            if (!this._draw)
-                this._draw = new Draw({view});
-            this._activateDrawing();
-        }
-
-
-    _activateDrawing() {
-        this._draw?.reset();
-        this.drawAction = this._draw.create("point");
-        this.drawAction.on("cursor-update", this._drawHoverGraphic.bind(this));
-        this.drawAction.on("draw-complete", this._findFeatureAndAddLabels.bind(this));
+            model.fields = fields;
+            model.selectedFields = [];
+        });
     }
 
-    _deactivateDrawing() {
-        this._draw.reset();
-        this._drawAction = null;
-        this._deleteHoverGraphic();
+    private activateFeatureSelection(): void {
+        this.getView().then(view => {
+            if (!this.draw)
+                this.draw = new Draw({ view });
+            this.activateDrawing();
+        });
     }
 
-    _drawHoverGraphic({coordinates}) {
+    private activateDrawing(): void {
+        this.draw?.reset();
+        this.drawAction = this.draw.create("point");
+        this.drawAction.on("cursor-update", this.drawHoverGraphic.bind(this)); // TODO Remove bind syntax
+        this.drawAction.on("draw-complete", this.findFeatureAndAddLabels.bind(this));
+    }
 
+    private deactivateDrawing(): void {
+        this.draw.reset();
+        this.drawAction = null;
+        this.deleteHoverGraphic();
+    }
+
+    private drawHoverGraphic({ coordinates }): void {
+        const model = this._labelingModel;
         const view = this._mapWidgetModel.view;
 
         const point = {
@@ -124,106 +117,116 @@ export default class {
             spatialReference: view.spatialReference
         };
 
-        const  graphic = new Graphic({
+        const graphic = new Graphic({
             geometry: point,
-            symbol: this._hoverSymbol
+            symbol: model.hoverSymbol
         });
 
-        view.graphics.remove(this._hoverGraphic);
-        this._hoverGraphic = graphic;
-        view.graphics.add(this._hoverGraphic);
+        view.graphics.remove(this.hoverGraphic);
+        this.hoverGraphic = graphic;
+        view.graphics.add(this.hoverGraphic);
     }
 
-    _deleteHoverGraphic() {
-        this._mapWidgetModel.view.graphics.remove(this._hoverGraphic);
-        this._hoverGraphic = null;
+    private deleteHoverGraphic(): void {
+        this._mapWidgetModel.view.graphics.remove(this.hoverGraphic);
+        this.hoverGraphic = null;
     }
 
-    _findFeatureAndAddLabels({coordinates}) {
+    private findFeatureAndAddLabels({ coordinates }): void {
+        const model = this._labelingModel;
 
         // Resets the drawing, but doesnt disable it, since labeling is done via toggle tool
-        this._activateDrawing();
+        this.activateDrawing();
 
         const x = coordinates[0];
         const y = coordinates[1];
         const spatialReference = this._mapWidgetModel.view.spatialReference;
-        const point = new Point({x, y, spatialReference});
+        const point = new Point({ x, y, spatialReference });
 
-        const queryParams =  this._labelingModel.selectedLayer.createQuery();
+        const queryParams = model.selectedLayer.createQuery();
         queryParams.geometry = point;
         queryParams.outFields = ["*"];
 
-        const layer = this._labelingModel.selectedLayer;
-        layer.queryFeatures(queryParams).then(this._addLabelsToFoundFeature.bind(this));
+        const layer = model.selectedLayer;
+        layer.queryFeatures(queryParams).then(this.addLabelsToFoundFeature.bind(this));
     }
 
-    _addLabelsToFoundFeature(result) {
+    private addLabelsToFoundFeature(result): void {
+        const model = this._labelingModel;
 
         if (result.features.length === 0)
             return;
 
         const feature = result.features[0];
 
-        this._addFieldLabelsToFeature(feature);
+        this.addFieldLabelsToFeature(feature);
 
-        if (this._labelingModel.showFeatureEdgeLengths) {
-            this._lengthLabelCreator.getEdgeLengthLabels(feature)
-                .then(labels => labels.forEach((label) => this._addLabelToMap(label, feature, "edge")));
+        if (model.showFeatureEdgeLengths) {
+            this.labelCreator.getEdgeLengthLabels(feature)
+                .then(labels => labels.forEach((label) => this.addLabelToMap(label, feature, "edge")));
         }
     }
 
-    _addFieldLabelsToFeature(feature) {
+    private addFieldLabelsToFeature(feature): void {
+        const model = this._labelingModel;
 
         const attributes = feature.attributes;
         const labelStrings = [];
-        console.info(this._labelingModel.selectedFields);
-        for (let labelDef of this._labelingModel.selectedFields) {
+        for (const labelDef of model.selectedFields) {
             const attributeName = labelDef.name;
             const attributeValue = attributes[attributeName];
             const value = attributeValue ? attributeValue : "";
-            let label = attributeName + ": " + value;
-            if (labelDef.prefix || labelDef. postfix){
-                label = labelDef.prefix + " " + value + " " + labelDef.postfix;
+            let label = `${attributeName}:${value}`;
+            if (labelDef.prefix || labelDef.postfix) {
+                label = `${labelDef.prefix} ${value} ${labelDef.postfix}`;
             }
             labelStrings.push(label);
         }
 
         const labelString = labelStrings.join("\n");
 
-        const symbol = Object.assign({}, this._textSymbol);
+        const symbol = Object.assign({}, model.textSymbol);
         symbol.text = labelString;
 
-        let geometry = feature.geometry;
-        let center = geometry.centroid;
-        let graphic = new Graphic({symbol, geometry: center});
+        const geometry = feature.geometry;
+        const center = geometry.centroid;
+        const graphic = new Graphic({ symbol, geometry: center });
 
-        this._addLabelToMap(graphic, feature, "field");
+        this.addLabelToMap(graphic, feature, "field");
     }
 
-    _addLabelToMap(graphic, feature, fieldOrEdge) {
-        console.info(feature);
-        if(fieldOrEdge == "field"){
-            this._fieldLabels.push({graphic: graphic, feature: feature});
+    private addLabelToMap(graphic, feature, fieldOrEdge): void {
+        if (fieldOrEdge == "field") {
+            this._fieldLabels.push({ graphic: graphic, feature: feature });
         }
-        else{
-            this._edgeLabels.push({graphic: graphic, feature: feature});
+        else {
+            this._edgeLabels.push({ graphic: graphic, feature: feature });
         }
         this._mapWidgetModel.view.graphics.add(graphic);
 
     }
 
-    deleteAllLabels() {
-        for (let graphic of this._fieldLabels){
+    public deleteAllLabels(): void {
+        for (const graphic of this._fieldLabels) {
             this._mapWidgetModel.view.graphics.remove(graphic.graphic);
         }
-        for (let graphic of this._edgeLabels){
+        for (const graphic of this._edgeLabels) {
             this._mapWidgetModel.view.graphics.remove(graphic.graphic);
         }
     }
 
-    deleteLabel(feature){
-        console.info(feature)
+    private getView(): Promise< __esri.MapView | __esri.SceneView> {
+        const mapWidgetModel = this._mapWidgetModel;
+        return new Promise((resolve) => {
+            if (mapWidgetModel.view) {
+                resolve(mapWidgetModel.view);
+            } else {
+                const watcher = mapWidgetModel.watch("view", ({ value: view }) => {
+                    watcher.remove();
+                    resolve(view);
+                });
+            }
+        });
     }
-
 
 }

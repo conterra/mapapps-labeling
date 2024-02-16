@@ -13,6 +13,7 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 ///
+
 import * as GeomEngineAsync from "esri/geometry/geometryEngineAsync";
 import Polyline from "esri/geometry/Polyline";
 import Graphic from "esri/Graphic";
@@ -22,10 +23,10 @@ import { InjectedReference } from "apprt-core/InjectedReference";
 import { MapWidgetModel } from "map-widget/api";
 import { GeneralizationConfig } from "../../types/GeneralizationConfig";
 
-export default class EdgeLengthLabelCreator {
+export default class LabelCreator {
 
     private generalizationConfig: GeneralizationConfig;
-    private mapWidgetModel: InjectedReference<MapWidgetModel>;
+    private mapWidgetModel: MapWidgetModel;
     private textSymbol: __esri.TextSymbol;
     private lengthUnit: __esri.LinearUnit;
 
@@ -113,7 +114,7 @@ export default class EdgeLengthLabelCreator {
     }
 
     private getView(): Promise< __esri.MapView | __esri.SceneView> {
-        const mapWidgetModel = this.mapWidgetModel;
+        const mapWidgetModel = this._mapWidgetModel;
         return new Promise((resolve) => {
             if (mapWidgetModel.view) {
                 resolve(mapWidgetModel.view);

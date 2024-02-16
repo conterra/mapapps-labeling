@@ -14,9 +14,8 @@
 /// limitations under the License.
 ///
 
-import ".";
-import "./LabelCreator";
-import "./LabelingController";
-import "./LabelingModel";
-import "./LabelingWidgetFactory";
-import "ct/tools/Tool";
+export interface GeneralizationConfig {
+    maxDeviationUnit: "meters" | "feet" | "kilometers" | "miles" | "nautical-miles" | "yards"
+    maxDeviation: number
+    removeDegenerateParts: boolean
+}

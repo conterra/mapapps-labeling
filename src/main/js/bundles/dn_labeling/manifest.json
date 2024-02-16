@@ -50,31 +50,8 @@
             "impl": "./LabelingModel",
             "provides": "labeling.LabelingModel",
             "propertiesConstructor": true,
-            "properties": {}
-        },
-        {
-            "name": "LabelingWidgetFactory",
-            "provides": ["dijit.Widget"],
-            "instanceFactory": true,
             "properties": {
-                "widgetRole": "labelingWidget"
-            },
-            "references": [
-                {
-                    "name": "_controller",
-                    "providing": "labeling.LabelingController"
-                },
-                {
-                    "name": "_labelingModel",
-                    "providing": "labeling.LabelingModel"
-                }
-            ]
-        },
-		{
-			"name": "LabelingController",
-			"provides": ["labeling.LabelingController"],
-			"properties": {
-				"hoverSymbol": {
+                "hoverSymbol": {
 					"type": "simple-marker",
 					"style": "circle",
 					"color": "red",
@@ -97,12 +74,33 @@
 					"maxDeviation": 0.5,
 					"removeDegenerateParts": true
 				}
-			},
+            }
+        },
+        {
+            "name": "LabelingWidgetFactory",
+            "provides": ["dijit.Widget"],
+            "instanceFactory": true,
+            "properties": {
+                "widgetRole": "labelingWidget"
+            },
+            "references": [
+                {
+                    "name": "_controller",
+                    "providing": "labeling.LabelingController"
+                },
+                {
+                    "name": "_labelingModel",
+                    "providing": "labeling.LabelingModel"
+                }
+            ]
+        },
+		{
+			"name": "LabelingController",
+			"provides": ["labeling.LabelingController"],
 			"references": [
 				{
 					"name": "_labelingTool",
 					"providing": "ct.tools.Tool",
-					"cardinality": "1..1",
 					"filter": "(id=labelingToggleTool)"
 				},
 				{
