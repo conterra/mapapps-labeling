@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.v-select__selections{
-    display: grid !important;
+.ctAppRoot .labelingWidget .v-select__selections{
+    display: grid;
 }
 
-.v-chip{
-    width: 100% !important;
+.ctAppRoot .labelingWidget .v-chip{
+    width: 100%;
 }
 
-.v-chip__content{
-    width: 100% !important;
-    padding: 0px !important;
+.ctAppRoot .labelingWidget .v-chip__content{
+    width: 100%;
+    padding: 0;
 }
 
-.v-btn--icon{
-    margin: 0px !important;
+.ctAppRoot .labelingWidget .v-btn--icon{
+    margin: 0;
 }
 
-#editText{
-    padding: 15px !important;
+.ctAppRoot .labelingWidget #editText{
+    padding: 15px;
 }
 
-#iconRight{
-    float:  right !important;
+.ctAppRoot .labelingWidget #iconRight{
+    float:  right;
 }
