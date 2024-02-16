@@ -13,67 +13,59 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 ///
-
-/*
- * Copyright (C) 2023 con terra GmbH (info@conterra.de)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import type { InjectedReference } from "apprt-core/InjectedReference";
 import * as GeomEngineAsync from "esri/geometry/geometryEngineAsync";
 import Polyline from "esri/geometry/Polyline";
 import Graphic from "esri/Graphic";
 import Point from "esri/geometry/Point";
 
+import { InjectedReference } from "apprt-core/InjectedReference";
+import { MapWidgetModel } from "map-widget/api";
+import { GeneralizationConfig } from "../../types/GeneralizationConfig";
 
 export default class EdgeLengthLabelCreator {
 
-    private _mapWidgetModel: InjectedReference<any>;
+    private generalizationConfig: GeneralizationConfig;
+    private mapWidgetModel: InjectedReference<MapWidgetModel>;
+    private textSymbol: __esri.TextSymbol;
+    private lengthUnit: __esri.LinearUnit;
 
-    constructor({mapWidgetModel, generalizationConfig, textSymbol, lengthUnit}) {
+    constructor(mapWidgetModel: MapWidgetModel, generalizationConfig: GeneralizationConfig,
+        textSymbol: __esri.TextSymbol, lengthUnit: __esri.LinearUnit) {
         this.generalizationConfig = generalizationConfig;
-        this._mapWidgetModel = mapWidgetModel;
+        this.mapWidgetModel = mapWidgetModel;
         this.textSymbol = textSymbol;
         this.lengthUnit = lengthUnit;
     }
 
-    getEdgeLengthLabels(feature) {
-
-        const geometry = feature.geometry;
-        const spatialReference = this._mapWidgetModel.view.spatialReference;
+    public async getEdgeLengthLabels(feature: __esri.Feature): Promise<any> {
         const config = this.generalizationConfig;
         const deviation = config.maxDeviation;
         const removeDegenParts = config.removeDegenerateParts;
         const unit = config.maxDeviationUnit;
 
+        const geometry = feature.geometry;
+        const view = await this.getView();
+        const spatialReference = view.spatialReference;
+
         return GeomEngineAsync
             .generalize(geometry, deviation, removeDegenParts, unit)
-            .then(this._collectLabels.bind(this, spatialReference));
+            .then(this.collectLabels.bind(this, spatialReference));
     }
 
-    _collectLabels(spatialReference, geometry) {
+    private collectLabels(spatialReference: __esri.SpatialReference, geometry: __esri.Polygon): Promise<any> {
         const promises = [];
         for (const ring of geometry.rings) {
-            const lines = this._getLinesFromRing(ring, spatialReference);
+            const lines = this.getLinesFromRing(ring, spatialReference);
             for (const line of lines) {
-                const promise = this._getLabelForLine(line, spatialReference);
+                const promise = this.getLabelForLine(line, spatialReference);
                 promises.push(promise);
             }
         }
         return Promise.all(promises);
     }
 
-    _getLinesFromRing(ring, spatialReference) {
+    private getLinesFromRing(ring: Array<Array<number>>, spatialReference: __esri.SpatialReference):
+    Array<__esri.Polyline> {
         const lines = [];
         for (let i = 0; i < ring.length - 1; i++) {
             const firstPoint = ring[i];
@@ -82,41 +74,55 @@ export default class EdgeLengthLabelCreator {
             const line = new Polyline({paths, spatialReference});
             lines.push(line);
         }
+
         return lines;
     }
 
-
-    _getLabelForLine(line, spatialReference) {
-        const center = this._getCenterFromLine(line, spatialReference);
-        if (this._spatialReferenceIsProjected(spatialReference))
+    private getLabelForLine(line: __esri.Polyline, spatialReference: __esri.SpatialReference) {
+        const center = this.getCenterFromLine(line, spatialReference);
+        if (this.spatialReferenceIsProjected(spatialReference))
             return GeomEngineAsync
                 .planarLength(line, this.lengthUnit)
-                .then(this._createLengthLabel.bind(this, center));
+                .then(this.createLengthLabel.bind(this, center));
         else
             return GeomEngineAsync
                 .geodesicLength(line, this.lengthUnit)
-                .then(this._createLengthLabel.bind(this, center));
+                .then(this.createLengthLabel.bind(this, center));
     }
 
-    _createLengthLabel(geometry, length) {
+    private createLengthLabel(geometry: __esri.Geometry, length: number): __esri.Graphic {
         const symbol = Object.assign({}, this.textSymbol);
         symbol.text = length.toFixed(2).toString();
         return new Graphic({geometry, symbol});
     }
 
-    _spatialReferenceIsProjected(spatialReference) {
+    private spatialReferenceIsProjected(spatialReference: __esri.SpatialReference): boolean {
         return spatialReference.wkid !== 4326
             && spatialReference.wkid !== 3857
             && spatialReference.wkid !== 102100;
     }
 
-
-    _getCenterFromLine(line, spatialReference) {
+    private getCenterFromLine(line: __esri.Polyline, spatialReference: __esri.SpatialReference): __esri.Point {
         const path = line.paths[0];
-        const point1 = path[0];
-        const point2 = path[1];
+        const point1: Array<number> = path[0];
+        const point2: Array<number> = path[1];
         const xCenter = (point1[0] + point2[0]) / 2;
         const yCenter = (point1[1] + point2[1]) / 2;
+
         return new Point({x: xCenter, y: yCenter, spatialReference});
+    }
+
+    private getView(): Promise< __esri.MapView | __esri.SceneView> {
+        const mapWidgetModel = this.mapWidgetModel;
+        return new Promise((resolve) => {
+            if (mapWidgetModel.view) {
+                resolve(mapWidgetModel.view);
+            } else {
+                const watcher = mapWidgetModel.watch("view", ({ value: view }) => {
+                    watcher.remove();
+                    resolve(view);
+                });
+            }
+        });
     }
 }
