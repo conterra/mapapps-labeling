@@ -1,6 +1,8 @@
 {
     "name": "vuedraggable",
     "version": "2.24.3",
+    "author": "SortableJS",
+    "title": "Vue.Draggable",
     "description": "draggable component for vue",
     "license": "MIT",
     "repository": {
