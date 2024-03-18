@@ -13,17 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ctAppRoot .labelingWidget .v-select__selections{
-    display: grid;
-}
 
-.ctAppRoot .labelingWidget .v-chip{
-    width: 100%;
-}
+.ctAppRoot .labelingWidget .labelingWidgetContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
-.ctAppRoot .labelingWidget .v-chip__content{
-    width: 100%;
-    padding: 0;
+    .__selections-div {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+
+        .v-select__selections {
+            display: grid;
+            max-height: 220px;
+            overflow: hidden auto;
+
+            .v-chip {
+                width: 98%;
+
+                .v-chip__content{
+                    width: 100%;
+                    padding: 0;
+                }
+            }
+        }
+    }
+
+    .__controls-div {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 1;
+
+        .circumference-switch {
+            margin-top: 0;
+            max-height: 30px;
+        }
+
+        .v-btn {
+            margin-left: 0;
+        }
+    }
 }
 
 .ctAppRoot .labelingWidget .v-btn--icon{
@@ -31,9 +61,19 @@
 }
 
 .ctAppRoot .labelingWidget #editText{
-    padding: 15px;
+    padding: 5px;
+    margin: 10px;
 }
 
 .ctAppRoot .labelingWidget #iconRight{
     float:  right;
 }
+
+.ctAppRoot .labelingWidget #autocomplete {
+    display: none;
+}
+
+.ctAppRoot .labelingWidget .draggableSelect.v-input--is-dirty .v-input__slot:before {
+    display: none;
+}
+

@@ -24,13 +24,13 @@
                 "resizable": true,
 				"closeOnEscape": false,
 				"marginBox": {
-					"w": 385,
+					"w": 420,
 					"h": 500,
 					"t": 135,
 					"l": 20
 				},
 				"minSize": {
-					"w": 385,
+					"w": 420,
 					"h": 400
 				}
 			}

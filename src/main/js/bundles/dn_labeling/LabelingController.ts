@@ -26,21 +26,23 @@ import { MapWidgetModel } from "map-widget/api";
 export default class LabelingController {
 
     private drawAction: any; // TODO Typing
-    private _labelingModel: InjectedReference<typeof LabelingModel>;
     private hoverGraphic?: Graphic;
     private draw?: Draw;
     private labelCreator?: LabelCreator;
     private _fieldLabels: Array<any> = [];
     private _edgeLabels: Array<any> = [];
-
-    private _mapWidgetModel: InjectedReference<MapWidgetModel>;
+    private _labelingModel!: InjectedReference<typeof LabelingModel>;
+    private _mapWidgetModel!: InjectedReference<MapWidgetModel>;
 
     public activate(): void {
         const model = this._labelingModel;
 
-        // TODO: InjectedReference -> Default class
-        this.labelCreator = new LabelCreator(this._mapWidgetModel, model.generalizationConfig,
-            model.textSymbol, model.lengthUnit );
+        this.labelCreator = new LabelCreator(
+            this._mapWidgetModel,
+            model.generalization,
+            model.textSymbol,
+            model.lengthUnit
+        );
 
         const layers = this._mapWidgetModel.map.layers.items.filter((layer: __esri.Layer) => layer.title);
         model.layers = layers;
@@ -59,7 +61,6 @@ export default class LabelingController {
             });
         });
 
-        // TODO: Typing of value
         model.watch("active", ({ value }) => {
             if (value) {
                 this.activateFeatureSelection();
@@ -69,7 +70,6 @@ export default class LabelingController {
             }
         });
 
-        // TODO: Typing of value
         model.watch("selectedLayer", ({ value }) => {
             const fields = value.fields;
             fields.forEach((field: __esri.Field, index: number) => {
@@ -195,7 +195,7 @@ export default class LabelingController {
         this.addLabelToMap(graphic, feature, "field");
     }
 
-    private addLabelToMap(graphic, feature, fieldOrEdge): void {
+    private addLabelToMap(graphic: __esri.Graphic, feature: __esri.Feature, fieldOrEdge: "field" | "edge"): void {
         if (fieldOrEdge == "field") {
             this._fieldLabels.push({ graphic: graphic, feature: feature });
         }

@@ -19,7 +19,6 @@ import Polyline from "esri/geometry/Polyline";
 import Graphic from "esri/Graphic";
 import Point from "esri/geometry/Point";
 
-import { InjectedReference } from "apprt-core/InjectedReference";
 import { MapWidgetModel } from "map-widget/api";
 import { GeneralizationConfig } from "../../types/GeneralizationConfig";
 
@@ -50,7 +49,7 @@ export default class LabelCreator {
 
         return GeomEngineAsync
             .generalize(geometry, deviation, removeDegenParts, unit)
-            .then(this.collectLabels.bind(this, spatialReference));
+            .then(geom => this.collectLabels(spatialReference, geom));
     }
 
     private collectLabels(spatialReference: __esri.SpatialReference, geometry: __esri.Polygon): Promise<any> {
@@ -114,7 +113,7 @@ export default class LabelCreator {
     }
 
     private getView(): Promise< __esri.MapView | __esri.SceneView> {
-        const mapWidgetModel = this._mapWidgetModel;
+        const mapWidgetModel = this.mapWidgetModel;
         return new Promise((resolve) => {
             if (mapWidgetModel.view) {
                 resolve(mapWidgetModel.view);

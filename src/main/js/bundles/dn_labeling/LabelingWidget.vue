@@ -16,15 +16,9 @@
 
 -->
 <template>
-    <v-container
-        grid-list-md
-        pa-0
-    >
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex md12>
+    <div class="labelingWidgetContainer">
+        <div class="__selections-div">
+            <div>
                 <h4>Select Layer:</h4>
                 <v-autocomplete
                     v-model="selectedLayer"
@@ -35,21 +29,45 @@
                     single-line
                     label="Layer auswählen"
                     hide-details
-                    class="pt-0 mt-0"
+                    class="pt-0 mt-0 pb-2"
                 />
-            </v-flex>
-            <v-flex md12>
+            </div>
+            <div>
+                <div v-show="edit">
+                    <v-sheet elevation="12">
+                        <v-btn
+                            id="iconRight"
+                            icon
+                            small
+                            @click="edit = !edit"
+                        >
+                            <v-icon>close</v-icon>
+                        </v-btn>
+                        <div id="editText">
+                            <v-text-field
+                                v-model="editedField.prefix"
+                                label="Präfix"
+                            />
+                            <v-text-field
+                                v-model="editedField.postfix"
+                                label="Postfix"
+                            />
+                        </div>
+                    </v-sheet>
+                </div>
                 <h4>Select Fields:</h4>
-                <v-autocomplete
+                <v-select
                     id="autocomplete"
                     v-model="selectedFields"
                     :items="fields"
                     rounded
                     multiple
+                    single-line
                     label="Felder auswählen"
                     item-text="name"
                     return-object
-                    class="draggableSelect"
+                    class="draggableSelect pt-1 mt-0"
+                    clearable
                 >
                     <template #selection="data">
                         <draggable
@@ -88,34 +106,11 @@
                             </v-chip>
                         </draggable>
                     </template>
-                </v-autocomplete>
-            </v-flex>
-            <v-flex
-                v-show="edit"
-                md12
-            >
-                <v-sheet elevation="12">
-                    <v-btn
-                        id="iconRight"
-                        icon
-                        small
-                        @click="edit = !edit"
-                    >
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                    <div id="editText">
-                        <v-text-field
-                            v-model="editedField.prefix"
-                            label="Präfix"
-                        />
-                        <v-text-field
-                            v-model="editedField.postfix"
-                            label="Postfix"
-                        />
-                    </div>
-                </v-sheet>
-            </v-flex>
-            <v-flex md12>
+                </v-select>
+            </div>
+        </div>
+        <div class="__controls-div">
+            <div>
                 <v-switch
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
@@ -128,28 +123,31 @@
                     color="primary"
                     label="Änderungen automatisch anwenden"
                 />
-            </v-flex>
-        </v-layout>
-        <v-flex md12>
-            <v-container fluid>
+            </div>
+            <div>
                 <v-btn
                     v-if="!active"
+                    color="primary"
                     @click.native="setLabeling"
                 >
                     Start Labeling
                 </v-btn>
                 <v-btn
                     v-else
+                    color="primary"
                     @click.native="setLabeling"
                 >
                     Stop Labeling
                 </v-btn>
-                <v-btn @click.native="deleteLabel">
+                <v-btn
+                    color="secondary"
+                    @click.native="deleteLabel"
+                >
                     Delete labels
                 </v-btn>
-            </v-container>
-        </v-flex>
-    </v-container>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
     import * as draggable from 'vuedraggable';
@@ -160,8 +158,14 @@
         },
         mixins: [Bindable],
         props: {
-            fields: [],
-            layers: []
+            fields: {
+                type: Array,
+                default: () => []
+            },
+            layers: {
+                type: Array,
+                default: () => []
+            }
         },
         data: function () {
             return {
@@ -218,14 +222,12 @@
             },
             change: function (value) {
                 if (value.removed) {
-                    // insert
                     // eslint-disable-next-line max-len
                     this.selectedFields.splice(this.dragged.to + this.dragged.newIndex, 0, this.selectedFields[this.dragged.from]);
-                    // delete
-                    if (this.dragged.from < this.dragged.to) { // LTR
+                    if (this.dragged.from < this.dragged.to) {
                         this.selectedFields.splice(this.dragged.from, 1);
                     }
-                    else{ // RTL
+                    else{
                         this.selectedFields.splice(this.dragged.from + 1, 1);
                     }
                 }

@@ -22,40 +22,34 @@ import type {InjectedReference} from "apprt-core/InjectedReference";
 
 export default class LabelingWidgetFactory {
 
-    private vm : Vue;
+    private vm? : Vue;
     private _properties: InjectedReference<any>;
     private _labelingModel: InjectedReference<any>;
-    private labelingBinding: Bindable;
+    private labelingBinding?: Bindable;
     private _controller: InjectedReference<any>;
 
     activate ()  :void {
-        this._initComponent();
+        this.initComponent();
     }
 
     deactivate() : void{
-        this.labelingBinding.unbind();
-        this.labelingBinding= undefined;
+        if (this.labelingBinding) {
+            this.labelingBinding.unbind();
+            this.labelingBinding= undefined;
+        }
+
         this.vm = undefined;
     }
 
-    createInstance() : typeof VueDijit {
-        return VueDijit(this.vm, {class: "labeling-widget"});
-
-    }
-
-    _initComponent() :void {
-
-
-        const properties = this._properties;
-
-        const vm : InjectedReference<any> = this.vm = new Vue(LabelingWidget);
+    initComponent() :void {
+        const vm: InjectedReference<any> = this.vm = new Vue(LabelingWidget);
 
         const labelingModel = this._labelingModel;
         const controller = this._controller;
 
-        vm.$on("delete", controller.deleteAllLabels.bind(controller));
-
-
+        vm.$on("delete", () => {
+            controller.deleteAllLabels();
+        });
 
         this.labelingBinding = Binding.for(vm, labelingModel)
             .syncAll("active")
@@ -67,8 +61,10 @@ export default class LabelingWidgetFactory {
             .syncAll("syncChanges")
             .enable()
             .syncToLeftNow();
+    }
 
-
+    createInstance() : typeof VueDijit {
+        return VueDijit(this.vm, {class: "labeling-widget"});
     }
 
 }
