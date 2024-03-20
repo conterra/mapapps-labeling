@@ -1,23 +1,17 @@
 {
-	"name": "dn_labeling",
-	"version": "1.0.1-SNAPSHOT",
+    "name": "dn_labeling",
+    "version": "1.0.1-SNAPSHOT",
     "title": "${bundleName}",
     "description": "${bundleDescription}",
-	"vendor": "con terra GmbH",
+    "vendor": "con terra GmbH",
     "keywords": [
-        "labeling"
+        "sample"
     ],
-    "icon": {},
-    "license": {},
+    "main": "",
+    "dependencies": {
+        "vuedraggable" : "^2.24.0"
+    },
     "productName": "devnet-mapapps-labeling",
-    "CSS-Themes-Extension": [
-        {
-            "name": "*",
-            "files": [
-                "./css/styles.css"
-            ]
-        }
-    ],
 	"layout-widgets": [
 		{
 			"widgetRole": "labelingWidget",
@@ -30,38 +24,34 @@
                 "resizable": true,
 				"closeOnEscape": false,
 				"marginBox": {
-					"w": 385,
+					"w": 420,
 					"h": 500,
 					"t": 135,
 					"l": 20
 				},
 				"minSize": {
-					"w": 385,
+					"w": 420,
 					"h": 400
 				}
 			}
 		}
 	],
+    "cssThemesExtension": [
+        {
+            "name":"*",
+            "files": [
+                "./css/styles.css"
+            ]
+        }
+    ],
 	"components": [
         {
-            "name": "LabelingWidgetFactory",
-            "provides": ["dijit.Widget"],
-            "instanceFactory": true,
+            "name": "Config",
+            "impl": "./LabelingModel",
+            "provides": "labeling.LabelingModel",
+            "propertiesConstructor": true,
             "properties": {
-                "widgetRole": "labelingWidget"
-            },
-            "references": [
-                {
-                    "name": "_controller",
-                    "providing": "labeling.LabelingController"
-                }
-            ]
-        },
-		{
-			"name": "LabelingController",
-			"provides": ["labeling.LabelingController"],
-			"properties": {
-				"hoverSymbol": {
+                "hoverSymbol": {
 					"type": "simple-marker",
 					"style": "circle",
 					"color": "red",
@@ -78,26 +68,49 @@
 						"size": 12
 					}
 				},
-				"layerId": "flur_ham",
-				"subLayerId": 0,
 				"lengthUnit": "meters",
 				"generalization": {
 					"maxDeviationUnit": "meters",
 					"maxDeviation": 0.5,
 					"removeDegenerateParts": true
 				}
-			},
+            }
+        },
+        {
+            "name": "LabelingWidgetFactory",
+            "provides": ["dijit.Widget"],
+            "instanceFactory": true,
+            "properties": {
+                "widgetRole": "labelingWidget"
+            },
+            "references": [
+                {
+                    "name": "_controller",
+                    "providing": "labeling.LabelingController"
+                },
+                {
+                    "name": "_labelingModel",
+                    "providing": "labeling.LabelingModel"
+                }
+            ]
+        },
+		{
+			"name": "LabelingController",
+			"provides": ["labeling.LabelingController"],
 			"references": [
 				{
 					"name": "_labelingTool",
 					"providing": "ct.tools.Tool",
-					"cardinality": "1..1",
 					"filter": "(id=labelingToggleTool)"
 				},
 				{
 					"name": "_mapWidgetModel",
 					"providing": "map-widget.MapWidgetModel"
-				}
+				},
+                {
+                    "name": "_labelingModel",
+                    "providing": "labeling.LabelingModel"
+                }
 			]
 		},
 		{

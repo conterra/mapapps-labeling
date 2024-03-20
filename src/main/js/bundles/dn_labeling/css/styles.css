@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2023 con terra GmbH (info@conterra.de)
+ * Copyright (C) 2024 con terra GmbH (info@conterra.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ctAppRoot .circumference-switch {
-    padding-left: 6px
+.ctAppRoot .labelingWidget .labelingWidgetContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .__selections-div {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+
+        .v-select__selections {
+            display: grid;
+            max-height: 220px;
+            overflow: hidden auto;
+
+            .v-chip {
+                width: 98%;
+
+                .v-chip__content{
+                    width: 100%;
+                    padding: 0;
+                }
+            }
+        }
+    }
+
+    .__controls-div {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 1;
+
+        .circumference-switch {
+            margin-top: 0;
+            max-height: 30px;
+        }
+
+        .v-btn {
+            margin-left: 0;
+        }
+    }
 }
 
-.ctAppRoot #labeling-options-list b {
-    font-size: 1rem !important;
+.ctAppRoot .labelingWidget .v-btn--icon{
+    margin: 0;
 }
+
+.ctAppRoot .labelingWidget #editText{
+    padding: 5px;
+    margin: 10px;
+}
+
+.ctAppRoot .labelingWidget #iconRight{
+    float:  right;
+}
+
+.ctAppRoot .labelingWidget #autocomplete {
+    display: none;
+}
+
+.ctAppRoot .labelingWidget .draggableSelect.v-input--is-dirty .v-input__slot:before {
+    display: none;
+}
+

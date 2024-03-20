@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2023 con terra GmbH (info@conterra.de)
+    Copyright (C) 2024 con terra GmbH (info@conterra.de)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,183 +16,222 @@
 
 -->
 <template>
-    <v-container
-        fill-height
-        pa-0
-    >
-        <v-layout column>
-            <v-flex
-                id="labeling-options"
-                column
-                fill-height
-            >
-                <h4>Beschriftung festlegen</h4>
+    <div class="labelingWidgetContainer">
+        <div class="__selections-div">
+            <div>
+                <h4>Select Layer:</h4>
+                <v-autocomplete
+                    v-model="selectedLayer"
+                    :items="layers"
+                    rounded
+                    item-text="title"
+                    return-object
+                    single-line
+                    label="Layer auswählen"
+                    hide-details
+                    class="pt-0 mt-0 pb-2"
+                />
+            </div>
+            <div>
+                <div v-show="edit">
+                    <v-sheet elevation="12">
+                        <v-btn
+                            id="iconRight"
+                            icon
+                            small
+                            @click="edit = !edit"
+                        >
+                            <v-icon>close</v-icon>
+                        </v-btn>
+                        <div id="editText">
+                            <v-text-field
+                                v-model="editedField.prefix"
+                                label="Präfix"
+                            />
+                            <v-text-field
+                                v-model="editedField.postfix"
+                                label="Postfix"
+                            />
+                        </div>
+                    </v-sheet>
+                </div>
+                <h4>Select Fields:</h4>
+                <v-select
+                    id="autocomplete"
+                    v-model="selectedFields"
+                    :items="fields"
+                    rounded
+                    multiple
+                    single-line
+                    label="Felder auswählen"
+                    item-text="name"
+                    return-object
+                    class="draggableSelect pt-1 mt-0"
+                    clearable
+                >
+                    <template #selection="data">
+                        <draggable
+                            :id="data.index"
+                            :list="selectedFields"
+                            v-bind="dragOptionsChips"
+                            :move="move"
+                            @change="change"
+                        >
+                            <v-chip
+                                :key="data.item.name"
+                                draggable
+                                label
+                                outline
+                                class="short"
+                                @mousedown.stop
+                                @click.stop
+                            >
+                                <v-icon>drag_indicator</v-icon>
+
+                                <span>{{ data.item.name }}</span>
+                                <span>
+                                    <v-btn
+                                        icon
+                                        @click="setEdit(data.item)"
+                                    >
+                                        <v-icon small>edit</v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        icon
+                                        @click="remove(data.item)"
+                                    >
+                                        <v-icon small>close</v-icon>
+                                    </v-btn>
+                                </span>
+                            </v-chip>
+                        </draggable>
+                    </template>
+                </v-select>
+            </div>
+        </div>
+        <div class="__controls-div">
+            <div>
                 <v-switch
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
                     color="primary"
                     label="Kantenlängen beschriften"
                 />
-                <v-layout column>
-                    <v-layout
-                        shrink
-                        row
-                    >
-                        <v-autocomplete
-                            v-model="selectedField"
-                            :items="layerFields"
-                            item-text="alias"
-                            return-object
-                            single-line
-                            label="Attribut zur Beschriftung hinzufügen"
-                            hide-details
-                            class="pt-0 mt-0"
-                        />
-                        <v-btn
-                            :disabled="disableAddButton"
-                            icon
-                            small
-                            dark
-                            color="primary"
-                            @click="handleFieldAdditionClick"
-                        >
-                            <v-icon>add</v-icon>
-                        </v-btn>
-                    </v-layout>
-                    <v-flex
-                        grow
-                        style="overflow-y: auto;"
-                    >
-                        <v-list id="labeling-options-list">
-                            <label-definition-widget
-                                v-for="label in fieldLabels"
-                                :id="label.id"
-                                :key="label.id"
-                                :name="label.alias"
-                                :initial-prefix="label.prefix"
-                                :initial-postfix="label.postfix"
-                                @delete-label-definition="handleLabelDefinitionDeletion"
-                                @edit-label="handleLabelEdit"
-                            />
-                        </v-list>
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-
-            <v-flex shrink>
-                <v-btn
-                    block
+                <v-switch
+                    v-model="syncChanges"
+                    class="controls circumference-switch"
                     color="primary"
-                    class="ma-0"
-                    @click="handleDeleteAllLabelsClick"
+                    label="Änderungen automatisch anwenden"
+                />
+            </div>
+            <div>
+                <v-btn
+                    v-if="!active"
+                    color="primary"
+                    @click.native="setLabeling"
                 >
-                    Alle Beschriftungen
-                    Löschen
+                    Start Labeling
                 </v-btn>
-            </v-flex>
-
-
-            <!-- Divider -->
-            <v-divider class="mt-2 mb-3" />
-
-            <!-- Activate/Deactivate Buttons -->
-
-            <v-flex
-                column
-                justify-space-around
-                align-center
-            >
-                <div>
-                    <v-btn
-                        class="success"
-                        @click="handleSelectionActivation"
-                    >
-                        Auswahl aktivieren
-                    </v-btn>
-                    <v-btn
-                        class="error"
-                        @click="handleSelectionDeactivation"
-                    >
-                        Auswahl deaktivieren
-                    </v-btn>
-                </div>
-            </v-flex>
-        </v-layout>
-    </v-container>
+                <v-btn
+                    v-else
+                    color="primary"
+                    @click.native="setLabeling"
+                >
+                    Stop Labeling
+                </v-btn>
+                <v-btn
+                    color="secondary"
+                    @click.native="deleteLabel"
+                >
+                    Delete labels
+                </v-btn>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
-
+    import * as draggable from 'vuedraggable';
     import Bindable from "apprt-vue/mixins/Bindable";
-    import LabelDefinitionWidget from "./LabelDefinitionWidget.vue";
-
     export default {
-
         components: {
-            "label-definition-widget": LabelDefinitionWidget
+            "draggable": draggable.draggable
         },
-
         mixins: [Bindable],
-
         props: {
-            i18n: {
-                type: Object,
-                default: () => {
-                    return {};
-                }
-            },
-            layerFields: {
+            fields: {
                 type: Array,
                 default: () => []
             },
-            fieldLabels:{
+            layers: {
                 type: Array,
                 default: () => []
             }
         },
-
         data: function () {
             return {
-                showFeatureEdgeLengths: true,
-                selectedField: null,
-                selectionActivated: false
+                dragged: {
+                    from: -1,
+                    to: -1,
+                    newIndex: -1
+                },
+                active: false,
+                lables: [],
+                selectedFields: [],
+                selectedLayer: null,
+                showFeatureEdgeLengths: false,
+                edit: false,
+                editedField: {
+                    prefix: "",
+                    postfix: ""
+                },
+                syncChanges: true
             };
         },
         computed: {
-            disableAddButton() {
-                return !this.selectedField;
+            dragOptionsChips() {
+                return {
+                    animation: 200,
+                    group: "group",
+                    disabled: false,
+                    ghostClass: "ghost",
+                    sort: true
+                };
             }
         },
-        watch: {
-            showFeatureEdgeLengths() {
-                this.handleEdgeLabelingChange();
-            }
-        },
-
         methods: {
-            handleDeleteAllLabelsClick() {
-                this.$emit("delete-all-labels");
+            setLabeling() {
+                this.active = !this.active;
             },
-            handleEdgeLabelingChange() {
-                this.$emit("set-show-edge-lengths", this.showFeatureEdgeLengths);
+            setEdit(item) {
+                this.edit = true;
+                this.editedField = item;
             },
-            handleFieldAdditionClick() {
-                this.$emit("add-field-label", this.selectedField);
-                this.selectedField = null;
+            deleteLabel() {
+                this.$emit("delete");
             },
-            handleLabelDefinitionDeletion(id) {
-                this.$emit("delete-label-definition", id);
+            remove(item) {
+                this.selectedFields.splice(this.selectedFields.indexOf(item), 1);
+                this.selectedFields = [...this.selectedFields];
             },
-            handleLabelEdit(event) {
-                this.$emit("edit-label", event);
+            move: function (value) {
+                this.dragged = {
+                    from: parseInt(value.from.id),
+                    to: parseInt(value.to.id),
+                    newIndex: value.draggedContext.futureIndex
+                };
             },
-
-            handleSelectionActivation() {
-                this.$emit("activate-selection");
-            },
-            handleSelectionDeactivation() {
-                this.$emit("deactivate-selection");
+            change: function (value) {
+                if (value.removed) {
+                    // eslint-disable-next-line max-len
+                    this.selectedFields.splice(this.dragged.to + this.dragged.newIndex, 0, this.selectedFields[this.dragged.from]);
+                    if (this.dragged.from < this.dragged.to) {
+                        this.selectedFields.splice(this.dragged.from, 1);
+                    }
+                    else{
+                        this.selectedFields.splice(this.dragged.from + 1, 1);
+                    }
+                }
             }
         }
     };
-
 </script>

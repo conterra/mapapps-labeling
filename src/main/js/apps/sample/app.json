@@ -29,7 +29,8 @@
             "locator-store",
             "toc",
             "printing",
-            "dn_labeling"
+            "dn_labeling",
+            "vuedraggable"
         ],
         "require": [
             "${app}.app"
@@ -161,6 +162,13 @@
                             "before"
                         ]
                     }
+                ]
+            }
+        },
+        "toolrules": {
+            "ToolActiveStateManager": {
+                "activateOnStartToolIds": [
+                    "labelingToggleTool"
                 ]
             }
         }
