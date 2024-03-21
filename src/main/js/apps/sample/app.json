@@ -59,8 +59,6 @@
                         "size": 12
                     }
                 },
-                "layerId": "flur_ham",
-                "subLayerId": 0,
                 "lengthUnit": "meters",
                 "generalization": {
                     "maxDeviationUnit": "meters",
@@ -91,6 +89,37 @@
                 ],
                 "map": {
                     "layers": [
+                        {
+                            "id": "g1",
+                            "title": "Group",
+                            "type": "GROUP",
+                            "layers": [
+                                {
+                                    "id": "flurst_berlin",
+                                    "type": "AGS_FEATURE",
+                                    "url": "https://services2.arcgis.com/jUpNdisbWqRpMo35/ArcGIS/rest/services/Flurst_Berlin/FeatureServer/0",
+                                    "outFields": [
+                                        "*"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "koeln",
+                            "url": "https://geoportal.stadt-koeln.de/arcgis/rest/services/basiskarten/kgg/MapServer",
+                            "type": "AGS_DYNAMIC",
+                            "title": "Stadt Köln",
+                            "sublayers": [
+                                {
+                                    "id": 3,
+                                    "title": "Stadtteil"
+                                },
+                                {
+                                    "id": 4,
+                                    "title": "Stadtbezirk"
+                                }
+                            ]
+                        },
                         {
                             "title": "Flurstücke Hamburg",
                             "id": "flur_ham",
