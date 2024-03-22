@@ -41,7 +41,7 @@
     },
     "bundles": {
         "dn_labeling": {
-            "LabelingController": {
+            "Config": {
                 "hoverSymbol": {
                     "type": "simple-marker",
                     "style": "circle",
