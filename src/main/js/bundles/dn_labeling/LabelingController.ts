@@ -18,71 +18,154 @@ import Graphic from "esri/Graphic";
 import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
 import LabelCreator from "./LabelCreator";
+import * as reactiveUtils from "esri/core/reactiveUtils";
+import { Observers, createObservers } from "apprt-core/Observers";
+
 
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import LabelingModel from "./LabelingModel";
 import { MapWidgetModel } from "map-widget/api";
+import Collection from "esri/core/Collection";
 
 export default class LabelingController {
 
+    private modelObservers?: Observers;
+    private mapLayerWatcher?: __esri.WatchHandle;
+    private layerObservers?: Observers;
     private drawAction: any; // TODO Typing
     private hoverGraphic?: Graphic;
     private draw?: Draw;
     private labelCreator?: LabelCreator;
     private _fieldLabels: Array<any> = [];
     private _edgeLabels: Array<any> = [];
-    private _labelingModel!: InjectedReference<typeof LabelingModel>;
-    private _mapWidgetModel!: InjectedReference<MapWidgetModel>;
+    private _labelingModel: InjectedReference<typeof LabelingModel>;
+    private _mapWidgetModel: InjectedReference<MapWidgetModel>;
 
-    public activate(): void {
-        const model = this._labelingModel;
+    public onToolActivated(): void {
+        const model = this._labelingModel!;
+        const mapWidgetModel = this._mapWidgetModel!;
 
         this.labelCreator = new LabelCreator(
-            this._mapWidgetModel,
+            mapWidgetModel,
             model.generalization,
             model.textSymbol,
             model.lengthUnit
         );
 
-        const layers = this._mapWidgetModel.map.layers.items.filter((layer: __esri.Layer) => layer.title);
-        model.layers = layers;
-        model.selectedLayer = layers[0];
+        this.modelObservers = this.createModelObservers();
+        this.mapLayerWatcher = this.createMapLayerWatcher(mapWidgetModel);
+    }
 
-        model.selectedLayer.when(() => {
-            const fields = model.selectedLayer.fields;
-            fields.forEach((field: __esri.Field, index: number) => {
-                if (!fields[index].prefix) {
-                    fields[index].prefix = `${fields[index].name}: `;
-                }
-                if (!fields[index].postfix) {
-                    fields[index].postfix = "";
-                }
-                model.fields = fields;
-            });
-        });
+    public onToolDeactivated(): void {
+        if (this.modelObservers) {
+            this.modelObservers.destroy();
+            this.modelObservers = undefined;
+        }
 
-        model.watch("active", ({ value }) => {
-            if (value) {
-                this.activateFeatureSelection();
+        if (this.mapLayerWatcher) {
+            this.mapLayerWatcher.remove();
+        }
+
+        if (this.layerObservers) {
+            this.layerObservers.destroy();
+            this.layerObservers = undefined;
+        }
+    }
+
+
+    private createModelObservers(): Observers {
+        const model = this._labelingModel!;
+        const modelOberservers = createObservers();
+
+        modelOberservers.add(
+            model.watch("active", ({ value: active }) => {
+                if (active) {
+                    this.activateFeatureSelection();
+                }
+                else {
+                    this.deactivateDrawing();
+                }
+            })
+        );
+
+        modelOberservers.add(
+            model.watch("selectedLayer", ({ value: layer }) => {
+                layer.when(() => {
+                    const fields = layer.fields;
+                    fields.forEach((field: __esri.Field, index: number) => {
+                        if (!fields[index].prefix) {
+                            fields[index].prefix = `${fields[index].name}: `;
+                        }
+                        if (!fields[index].postfix) {
+                            fields[index].postfix = "";
+                        }
+                    });
+                    model.fields = fields;
+                    model.selectedFields = [];
+                });
+            })
+        );
+
+        return modelOberservers;
+    }
+
+    private createMapLayerWatcher(mapWidgetModel: MapWidgetModel): __esri.WatchHandle {
+        return reactiveUtils.watch(
+            () => [mapWidgetModel.map.layers], ([layers]) => {
+                if (this.layerObservers) {
+                    this.layerObservers.clean();
+                }
+
+                this.layerObservers = this.createLayerObservers(layers);
+            },
+            {
+                initial: true
             }
-            else {
-                this.deactivateDrawing();
-            }
+        );
+    }
+
+    private createLayerObservers(layers: Collection<__esri.Layer>): Observers {
+        const layerObservers = createObservers();
+
+        layers.forEach(layer => {
+            layerObservers.add(
+                layer.watch("loaded", loaded => {
+                    this.updateSelectableLayers();
+
+                    if (loaded && layer?.layers?.length >= 1)
+                        layer.layers.forEach(layer => {
+                            layerObservers.add(
+                                layer.watch("loaded", () => {
+                                    this.updateSelectableLayers();
+                                })
+                            );
+                        });
+
+                    if (loaded && layer?.sublayers?.length >= 1) {
+                        layer.sublayers.forEach(() => {
+                            layerObservers.add(
+                                layer.watch("loaded", () => {
+                                    this.updateSelectableLayers();
+                                })
+                            );
+                        });
+                    }
+                })
+            );
         });
 
-        model.watch("selectedLayer", ({ value }) => {
-            const fields = value.fields;
-            fields.forEach((field: __esri.Field, index: number) => {
-                if (!fields[index].prefix) {
-                    fields[index].prefix = `${fields[index].name}: `;
-                }
-                if (!fields[index].postfix) {
-                    fields[index].postfix = "";
-                }
-            });
-            model.fields = fields;
-            model.selectedFields = [];
-        });
+        return layerObservers;
+    }
+
+    private updateSelectableLayers() {
+        const model = this._labelingModel!;
+        const mapWidgetModel = this._mapWidgetModel!;
+
+        const layers = mapWidgetModel.map.layers;
+        const flattenedLayer = this.getFlattenLayers(layers);
+
+        model.layers = flattenedLayer.items.filter((layer: __esri.Layer) => layer.title && layer.type !== "group" && !layer?.sublayers);
+        model.selectedLayer = model.layers[0];
     }
 
     private activateFeatureSelection(): void {
@@ -227,6 +310,10 @@ export default class LabelingController {
                 });
             }
         });
+    }
+
+    private getFlattenLayers(layers: __esri.Collection<__esri.Layer>): __esri.Collection<__esri.Layer> {
+        return layers.flatten(item => item.layers || item.sublayers);
     }
 
 }

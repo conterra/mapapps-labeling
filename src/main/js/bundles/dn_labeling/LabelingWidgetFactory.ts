@@ -28,7 +28,7 @@ export default class LabelingWidgetFactory {
     private labelingBinding?: Bindable;
     private _controller: InjectedReference<any>;
 
-    activate ()  :void {
+    activate (): void {
         this.initComponent();
     }
 

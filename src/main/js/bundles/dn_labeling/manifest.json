@@ -48,7 +48,7 @@
         {
             "name": "Config",
             "impl": "./LabelingModel",
-            "provides": "labeling.LabelingModel",
+            "provides": "dn_labeling.LabelingModel",
             "propertiesConstructor": true,
             "properties": {
                 "hoverSymbol": {
@@ -86,30 +86,25 @@
             "references": [
                 {
                     "name": "_controller",
-                    "providing": "labeling.LabelingController"
+                    "providing": "dn_labeling.LabelingController"
                 },
                 {
                     "name": "_labelingModel",
-                    "providing": "labeling.LabelingModel"
+                    "providing": "dn_labeling.LabelingModel"
                 }
             ]
         },
 		{
 			"name": "LabelingController",
-			"provides": ["labeling.LabelingController"],
+			"provides": ["dn_labeling.LabelingController"],
 			"references": [
-				{
-					"name": "_labelingTool",
-					"providing": "ct.tools.Tool",
-					"filter": "(id=labelingToggleTool)"
-				},
 				{
 					"name": "_mapWidgetModel",
 					"providing": "map-widget.MapWidgetModel"
 				},
                 {
                     "name": "_labelingModel",
-                    "providing": "labeling.LabelingModel"
+                    "providing": "dn_labeling.LabelingModel"
                 }
 			]
 		},
@@ -124,8 +119,16 @@
 				"tooltip": "Labeling Tool",
 				"iconClass": "esri-icon-labels",
 				"toolRole": "toolset",
-				"togglable": true
-			}
+				"togglable": true,
+                "activateHandler": "onToolActivated",
+                "deactivateHandler": "onToolDeactivated"
+			},
+            "references": [
+                {
+                    "name": "handlerScope",
+                    "providing": "dn_labeling.LabelingController"
+                }
+            ]
 		}
 	]
 }
