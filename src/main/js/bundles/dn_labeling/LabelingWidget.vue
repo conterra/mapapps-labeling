@@ -68,6 +68,7 @@
                     return-object
                     class="draggableSelect pt-1 mt-0"
                     clearable
+                    :disabled="!selectedLayer"
                 >
                     <template #selection="data">
                         <draggable
