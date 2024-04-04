@@ -54,6 +54,7 @@ export default class LabelingController {
 
         this.modelObservers = this.createModelObservers();
         this.mapLayerWatcher = this.createMapLayerWatcher(mapWidgetModel);
+        this.updateSelectableLayers();
     }
 
     public onToolDeactivated(): void {
@@ -90,6 +91,9 @@ export default class LabelingController {
 
         modelOberservers.add(
             model.watch("selectedLayer", ({ value: layer }) => {
+                if (layer.loadStatus === "not-loaded") {
+                    layer.load();
+                }
                 layer.when(() => {
                     const fields = layer.fields;
                     fields.forEach((field: __esri.Field, index: number) => {
@@ -165,7 +169,6 @@ export default class LabelingController {
         const flattenedLayer = this.getFlattenLayers(layers);
 
         model.layers = flattenedLayer.items.filter((layer: __esri.Layer) => layer.title && layer.type !== "group" && !layer?.sublayers);
-        model.selectedLayer = model.layers[0];
     }
 
     private activateFeatureSelection(): void {
