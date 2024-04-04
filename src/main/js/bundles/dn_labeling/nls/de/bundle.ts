@@ -29,7 +29,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module.exports = {
+
+import { Messages } from "../bundle";
+
+export default {
     bundleName: "Labeling Bundle",
-    bundleDescription: "Dieses Bundle beschriftet Features mit Kantenlängen und beliebigen zusätzlichen Attributen."
-};
+    bundleDescription: "Dieses Bundle beschriftet Features mit Kantenlängen und beliebigen zusätzlichen Attributen.",
+    ui: {
+        selectionTitle: "Layer auswählen",
+        selectionFields: "Felder auswählen",
+        edgesLabel: "Kantenlängen beschriften",
+        autoUpdate: "Änderungen automatisch anwenden"
+    }
+} satisfies Messages;

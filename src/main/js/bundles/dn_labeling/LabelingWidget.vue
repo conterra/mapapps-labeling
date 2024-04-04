@@ -19,7 +19,7 @@
     <div class="labelingWidgetContainer">
         <div class="__selections-div">
             <div>
-                <h4>Select Layer:</h4>
+                <h4>{{ i18n.selectionTitle }}</h4>
                 <v-autocomplete
                     v-model="selectedLayer"
                     :items="layers"
@@ -55,7 +55,7 @@
                         </div>
                     </v-sheet>
                 </div>
-                <h4>Select Fields:</h4>
+                <h4>{{ i18n.selectionFields }}</h4>
                 <v-select
                     id="autocomplete"
                     v-model="selectedFields"
@@ -115,13 +115,13 @@
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
                     color="primary"
-                    label="Kantenlängen beschriften"
+                    :label="i18n.edgesLabel"
                 />
                 <v-switch
                     v-model="syncChanges"
                     class="controls circumference-switch"
                     color="primary"
-                    label="Änderungen automatisch anwenden"
+                    :label="i18n.autoUpdate"
                 />
             </div>
             <div>
@@ -165,6 +165,12 @@
             layers: {
                 type: Array,
                 default: () => []
+            },
+            i18n: {
+                type: Object,
+                default: function () {
+                    return {};
+                }
             }
         },
         data: function () {
