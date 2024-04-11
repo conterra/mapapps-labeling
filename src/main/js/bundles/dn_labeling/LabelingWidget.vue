@@ -151,11 +151,11 @@
     </div>
 </template>
 <script>
-    import * as draggable from 'vuedraggable';
+    import draggable from 'vuedraggable';
     import Bindable from "apprt-vue/mixins/Bindable";
     export default {
         components: {
-            "draggable": draggable.draggable
+            "draggable": draggable
         },
         mixins: [Bindable],
         props: {

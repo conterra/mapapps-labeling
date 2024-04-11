@@ -14,9 +14,9 @@
 /// limitations under the License.
 ///
 
-import ".";
-import "./LabelCreator";
-import "./LabelingController";
-import "./LabelingModel";
-import "./LabelingWidgetFactory";
 import "ct/tools/Tool";
+
+export { default as LabelCreator } from "./LabelCreator";
+export { default as LabelingController } from "./LabelingController";
+export { default as Config } from "./LabelingModel";
+export { default as LabelingWidgetFactory } from "./LabelingWidgetFactory";
