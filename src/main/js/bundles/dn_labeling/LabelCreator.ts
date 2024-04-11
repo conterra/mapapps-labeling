@@ -52,15 +52,21 @@ export default class LabelCreator {
             .then(geom => this.collectLabels(spatialReference, geom));
     }
 
-    private collectLabels(spatialReference: __esri.SpatialReference, geometry: __esri.Polygon): Promise<any> {
+    private collectLabels(spatialReference: __esri.SpatialReference, geometry: __esri.Polygon | __esri.Polyline): Promise<any> {
         const promises = [];
-        for (const ring of geometry.rings) {
-            const lines = this.getLinesFromRing(ring, spatialReference);
-            for (const line of lines) {
-                const promise = this.getLabelForLine(line, spatialReference);
-                promises.push(promise);
+
+        if (geometry.rings) {
+            for (const ring of geometry.rings) {
+                const lines = this.getLinesFromRing(ring, spatialReference);
+                for (const line of lines) {
+                    const promise = this.getLabelForLine(line, spatialReference);
+                    promises.push(promise);
+                }
             }
+        } else if (geometry.paths) {
+            promises.push(this.getLabelForLine(geometry, spatialReference));
         }
+
         return Promise.all(promises);
     }
 
