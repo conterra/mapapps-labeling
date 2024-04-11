@@ -17,6 +17,7 @@
 import Graphic from "esri/Graphic";
 import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
+import Circle from "esri/geometry/Circle";
 import LabelCreator from "./LabelCreator";
 import * as reactiveUtils from "esri/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
@@ -193,8 +194,8 @@ export default class LabelingController {
     }
 
     private drawHoverGraphic({ coordinates }): void {
-        const model = this._labelingModel;
-        const view = this._mapWidgetModel.view;
+        const model = this._labelingModel!;
+        const view = this._mapWidgetModel!.view;
 
         const point = {
             type: "point",
@@ -220,21 +221,54 @@ export default class LabelingController {
 
     private findFeatureAndAddLabels({ coordinates }): void {
         const model = this._labelingModel;
+        const view = this._mapWidgetModel.view;
 
-        // Resets the drawing, but doesnt disable it, since labeling is done via toggle tool
         this.activateDrawing();
 
-        const x = coordinates[0];
-        const y = coordinates[1];
-        const spatialReference = this._mapWidgetModel.view.spatialReference;
-        const point = new Point({ x, y, spatialReference });
+        let targetGeometry;
+        const layer = model.selectedLayer;
+        if (layer.geometryType === "polygon") {
+            targetGeometry = new Point({
+                x: coordinates[0],
+                y: coordinates[1],
+                spatialReference: view.spatialReference
+            });
+        } else {
+            targetGeometry = this.createGeometryWithTolerance(coordinates, view, view.spatialReference);
+        }
 
-        const queryParams = model.selectedLayer.createQuery();
-        queryParams.geometry = point;
+        const queryParams = layer.createQuery();
+        queryParams.geometry = targetGeometry;
         queryParams.outFields = ["*"];
 
-        const layer = model.selectedLayer;
         layer.queryFeatures(queryParams).then(this.addLabelsToFoundFeature.bind(this));
+    }
+
+    private createGeometryWithTolerance(
+        coordinates: Array<number>,
+        view: __esri.View,
+        ref: __esri.SpatialReference
+    ): __esri.Point | __esri.Circle {
+        const model = this._labelingModel;
+
+        const centerPoint = new Point({ x: coordinates[0], y: coordinates[1], spatialReference: ref });
+        if (!model!.clickTolerance || model!.clickTolerance === 0) {
+            return centerPoint;
+        } else {
+            const toleranceMapUnits = this.convertClickToleranceToMapUnits(model!.clickTolerance, view);
+
+            return new Circle({
+                center: centerPoint,
+                radius: toleranceMapUnits,
+                spatialReference: ref
+            });
+        }
+    }
+
+    private convertClickToleranceToMapUnits(clickTolerance: number, view: __esri.View) {
+        const pixelWidth = view.width;
+        const mapUnitWidth = view.extent.width;
+        return mapUnitWidth / pixelWidth * (clickTolerance);
     }
 
     private addLabelsToFoundFeature(result): void {
@@ -275,7 +309,20 @@ export default class LabelingController {
         symbol.text = labelString;
 
         const geometry = feature.geometry;
-        const center = geometry.centroid;
+        let center;
+        if (geometry.type === "point") {
+            center = new Point({
+                x: geometry.x,
+                y: geometry.y,
+                spatialReference: geometry.spatialReference
+            });
+        }
+        else if (geometry.type === "polyline") {
+            center = geometry.extent.center;
+        } else {
+            center = geometry.centroid;
+        }
+
         const graphic = new Graphic({ symbol, geometry: center });
 
         this.addLabelToMap(graphic, feature, "field");
