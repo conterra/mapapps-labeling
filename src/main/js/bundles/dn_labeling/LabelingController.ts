@@ -164,7 +164,7 @@ export default class LabelingController {
                     if (loaded && layer?.layers?.length >= 1)
                         layer.layers.forEach(layer => {
                             layerObservers.add(
-                                layer.watch("loaded", () => {
+                                layer.watch("visible", () => {
                                     this.updateSelectableLayers();
                                 })
                             );
@@ -173,7 +173,7 @@ export default class LabelingController {
                     if (loaded && layer?.sublayers?.length >= 1) {
                         layer.sublayers.forEach(() => {
                             layerObservers.add(
-                                layer.watch("loaded", () => {
+                                layer.watch("visible", () => {
                                     this.updateSelectableLayers();
                                 })
                             );
