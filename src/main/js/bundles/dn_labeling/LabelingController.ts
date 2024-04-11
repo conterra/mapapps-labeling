@@ -17,7 +17,7 @@
 import Graphic from "esri/Graphic";
 import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
-import Circle from "esri/geometry/Circle";
+import Extent from "esri/geometry/Extent";
 import LabelCreator from "./LabelCreator";
 import * as reactiveUtils from "esri/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
@@ -33,7 +33,7 @@ export default class LabelingController {
     private modelObservers?: Observers;
     private mapLayerWatcher?: __esri.WatchHandle;
     private layerObservers?: Observers;
-    private drawAction: any; // TODO Typing
+    private drawAction: any;
     private hoverGraphic?: Graphic;
     private draw?: Draw;
     private labelCreator?: LabelCreator;
@@ -73,7 +73,6 @@ export default class LabelingController {
             this.layerObservers = undefined;
         }
     }
-
 
     private createModelObservers(): Observers {
         const model = this._labelingModel!;
@@ -248,7 +247,7 @@ export default class LabelingController {
         coordinates: Array<number>,
         view: __esri.View,
         ref: __esri.SpatialReference
-    ): __esri.Point | __esri.Circle {
+    ): __esri.Point | __esri.Extent {
         const model = this._labelingModel;
 
         const centerPoint = new Point({ x: coordinates[0], y: coordinates[1], spatialReference: ref });
@@ -256,12 +255,7 @@ export default class LabelingController {
             return centerPoint;
         } else {
             const toleranceMapUnits = this.convertClickToleranceToMapUnits(model!.clickTolerance, view);
-
-            return new Circle({
-                center: centerPoint,
-                radius: toleranceMapUnits,
-                spatialReference: ref
-            });
+            return this.createBufferExtent(centerPoint, toleranceMapUnits, ref);
         }
     }
 
@@ -269,6 +263,20 @@ export default class LabelingController {
         const pixelWidth = view.width;
         const mapUnitWidth = view.extent.width;
         return mapUnitWidth / pixelWidth * (clickTolerance);
+    }
+
+    private createBufferExtent(
+        point: __esri.Point,
+        bufferDistance: number,
+        ref: __esri.SpatialReference
+    ): __esri.Extent {
+        return new Extent({
+            xmin: point.x - bufferDistance,
+            xmax: point.x + bufferDistance,
+            ymin: point.y - bufferDistance,
+            ymax: point.y + bufferDistance,
+            spatialReference: ref
+        });
     }
 
     private addLabelsToFoundFeature(result): void {
