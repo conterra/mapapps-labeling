@@ -156,6 +156,31 @@ export default class LabelingController {
                     }
                 })
             );
+
+            layerObservers.add(
+                layer.watch("visible", loaded => {
+                    this.updateSelectableLayers();
+
+                    if (loaded && layer?.layers?.length >= 1)
+                        layer.layers.forEach(layer => {
+                            layerObservers.add(
+                                layer.watch("loaded", () => {
+                                    this.updateSelectableLayers();
+                                })
+                            );
+                        });
+
+                    if (loaded && layer?.sublayers?.length >= 1) {
+                        layer.sublayers.forEach(() => {
+                            layerObservers.add(
+                                layer.watch("loaded", () => {
+                                    this.updateSelectableLayers();
+                                })
+                            );
+                        });
+                    }
+                })
+            );
         });
 
         return layerObservers;
@@ -168,7 +193,9 @@ export default class LabelingController {
         const layers = mapWidgetModel.map.layers;
         const flattenedLayer = this.getFlattenLayers(layers);
 
-        model.layers = flattenedLayer.items.filter((layer: __esri.Layer) => layer.title && layer.type !== "group" && !layer?.sublayers);
+        model.layers = flattenedLayer.items.filter((layer: __esri.Layer) =>
+            layer.title && layer.visible && (layer.type === "feature" || layer.type === "map-image")
+        );
     }
 
     private activateFeatureSelection(): void {
@@ -356,7 +383,7 @@ export default class LabelingController {
         }
     }
 
-    private getView(): Promise< __esri.MapView | __esri.SceneView> {
+    private getView(): Promise<__esri.MapView | __esri.SceneView> {
         const mapWidgetModel = this._mapWidgetModel;
         return new Promise((resolve) => {
             if (mapWidgetModel.view) {
