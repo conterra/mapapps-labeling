@@ -9,11 +9,11 @@
     ],
     "main": "",
     "dependencies": {
-        "ct" : "^4.15.0",
-        "apprt-core": "^4.15.0",
-        "apprt-binding": "^4.15.0",
-        "apprt-vue": "^4.15.0",
-        "esri": "^4.20.0"
+        "ct" : "^4.13.0",
+        "apprt-core": "^4.13.0",
+        "apprt-binding": "^4.13.0",
+        "apprt-vue": "^4.13.0",
+        "esri": "^4.22.0"
     },
     "productName": "devnet-mapapps-labeling",
 	"layout-widgets": [

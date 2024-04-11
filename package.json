@@ -30,6 +30,7 @@
         "tsx": "^4.6.0",
         "typescript": "5.2.2",
         "vue": "2.7.15",
-        "vue-template-compiler": "2.7.15"
+        "vue-template-compiler": "2.7.15",
+        "vuedraggable": "2.24.0"
     }
 }
