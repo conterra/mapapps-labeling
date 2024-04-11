@@ -158,10 +158,10 @@ export default class LabelingController {
             );
 
             layerObservers.add(
-                layer.watch("visible", loaded => {
+                layer.watch("visible", visible => {
                     this.updateSelectableLayers();
 
-                    if (loaded && layer?.layers?.length >= 1)
+                    if (visible && layer?.layers?.length >= 1)
                         layer.layers.forEach(layer => {
                             layerObservers.add(
                                 layer.watch("visible", () => {
@@ -170,7 +170,7 @@ export default class LabelingController {
                             );
                         });
 
-                    if (loaded && layer?.sublayers?.length >= 1) {
+                    if (visible && layer?.sublayers?.length >= 1) {
                         layer.sublayers.forEach(() => {
                             layerObservers.add(
                                 layer.watch("visible", () => {
