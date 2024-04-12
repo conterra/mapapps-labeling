@@ -56,7 +56,7 @@ export default class LabelingWidgetFactory {
 
         this.labelingBinding = Binding.for(vm, labelingModel)
             .syncAll("active", "selectedLayer", "selectedFields", "showFeatureEdgeLengths", "syncChanges")
-            .syncAllToLeft("layers", "field")
+            .syncAllToLeft("layers", "fields")
             .enable()
             .syncToLeftNow();
     }
