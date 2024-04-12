@@ -117,6 +117,7 @@
                     class="controls circumference-switch"
                     color="primary"
                     :label="i18n.edgesLabel"
+                    :disabled="edgeLengthsDisabled"
                 />
                 <v-switch
                     v-model="syncChanges"
@@ -166,6 +167,10 @@
             layers: {
                 type: Array,
                 default: () => []
+            },
+            edgeLengthsDisabled: {
+                type: Boolean,
+                default: false
             },
             i18n: {
                 type: Object,

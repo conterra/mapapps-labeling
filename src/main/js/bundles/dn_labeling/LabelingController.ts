@@ -111,6 +111,13 @@ export default class LabelingController {
                     });
                     model.fields = fields;
                     model.selectedFields = [];
+
+                    if (layer.geometryType && layer.geometryType === "point") {
+                        model.showFeatureEdgeLengths = false;
+                        model.edgeLengthsDisabled = true;
+                    } else {
+                        model.edgeLengthsDisabled = false;
+                    }
                 });
             })
         );
