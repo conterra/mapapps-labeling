@@ -39,7 +39,7 @@ interface LabelingModelProps {
     active: boolean;
     labels: Array<any>;
     layers: Array<any>;
-    selectdLayer: any;
+    selectedLayer: __esri.Layer;
     fields: Array<any>;
     selectedFields: Array<any>;
     showFeatureEdgeLengths: boolean;
