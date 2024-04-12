@@ -19,9 +19,8 @@ import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
 import Extent from "esri/geometry/Extent";
 import LabelCreator from "./LabelCreator";
-import * as reactiveUtils from "esri/core/reactiveUtils";
+import { watch } from "esri/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
-
 
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import LabelingModel from "./LabelingModel";
@@ -30,9 +29,9 @@ import Collection from "esri/core/Collection";
 
 export default class LabelingController {
 
+    private lastTimeout: any;
     private modelObservers?: Observers;
     private mapLayerWatcher?: __esri.WatchHandle;
-    private mapViewWatcher?: __esri.WatchHandle;
     private mapObservers?: Observers;
     private drawAction: any;
     private hoverGraphic?: Graphic;
@@ -67,10 +66,6 @@ export default class LabelingController {
 
         if (this.mapLayerWatcher) {
             this.mapLayerWatcher.remove();
-        }
-
-        if (this.mapViewWatcher) {
-            this.mapViewWatcher.remove();
         }
 
         if (this.mapObservers) {
@@ -126,7 +121,7 @@ export default class LabelingController {
     }
 
     private createMapLayerWatcher(mapWidgetModel: MapWidgetModel): __esri.WatchHandle {
-        return reactiveUtils.watch(
+        return watch(
             () => [mapWidgetModel.map.layers], ([layers]) => {
                 if (this.mapObservers) {
                     this.mapObservers.clean();
@@ -148,7 +143,11 @@ export default class LabelingController {
         const view = await this.getView();
         mapObservers.add(
             view.watch("scale", () => {
-                this.updateSelectableLayers();
+                const toggleTimeout = 500;
+                clearTimeout(this.lastTimeout);
+                this.lastTimeout = setTimeout(() => {
+                    this.updateSelectableLayers();
+                }, toggleTimeout);
             })
         );
 
@@ -220,8 +219,9 @@ export default class LabelingController {
 
     private filterLayers(layers: Collection<__esri.Layer>, view: __esri.View): Array<__esri.Layer> {
         const titledLayers = layers.filter((layer) => layer.title !== undefined && layer.title !== null && layer.title !== "");
-        const usableTypeLayers = titledLayers.filter((layer) => layer.type === "feature" || layer.type === "map-image");
-        const visibleLayers = usableTypeLayers.filter((layer) =>
+        const usableTypeLayers = titledLayers.filter((layer) => layer.type !== "group" && layer.type !== "wms");
+        const layersWithFields = usableTypeLayers.filter((layer) => layer.fields);
+        const visibleLayers = layersWithFields.filter((layer) =>
             this.layerAndAllParentLayersVisible(layer) && this.isVisibleAtScale(layer, view.scale)
         );
 
