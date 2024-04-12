@@ -32,7 +32,8 @@ export default class LabelingController {
 
     private modelObservers?: Observers;
     private mapLayerWatcher?: __esri.WatchHandle;
-    private layerObservers?: Observers;
+    private mapViewWatcher?: __esri.WatchHandle;
+    private mapObservers?: Observers;
     private drawAction: any;
     private hoverGraphic?: Graphic;
     private draw?: Draw;
@@ -68,9 +69,13 @@ export default class LabelingController {
             this.mapLayerWatcher.remove();
         }
 
-        if (this.layerObservers) {
-            this.layerObservers.destroy();
-            this.layerObservers = undefined;
+        if (this.mapViewWatcher) {
+            this.mapViewWatcher.remove();
+        }
+
+        if (this.mapObservers) {
+            this.mapObservers.destroy();
+            this.mapObservers = undefined;
         }
     }
 
@@ -116,11 +121,13 @@ export default class LabelingController {
     private createMapLayerWatcher(mapWidgetModel: MapWidgetModel): __esri.WatchHandle {
         return reactiveUtils.watch(
             () => [mapWidgetModel.map.layers], ([layers]) => {
-                if (this.layerObservers) {
-                    this.layerObservers.clean();
+                if (this.mapObservers) {
+                    this.mapObservers.clean();
                 }
 
-                this.layerObservers = this.createLayerObservers(layers);
+                this.createMapObservers(layers).then(observers => {
+                    this.mapObservers = observers;
+                });
             },
             {
                 initial: true
@@ -128,17 +135,24 @@ export default class LabelingController {
         );
     }
 
-    private createLayerObservers(layers: Collection<__esri.Layer>): Observers {
-        const layerObservers = createObservers();
+    private async createMapObservers(layers: Collection<__esri.Layer>): Promise<Observers> {
+        const mapObservers = createObservers();
+
+        const view = await this.getView();
+        mapObservers.add(
+            view.watch("scale", () => {
+                this.updateSelectableLayers();
+            })
+        );
 
         layers.forEach(layer => {
-            layerObservers.add(
+            mapObservers.add(
                 layer.watch("loaded", loaded => {
                     this.updateSelectableLayers();
 
                     if (loaded && layer?.layers?.length >= 1)
                         layer.layers.forEach(layer => {
-                            layerObservers.add(
+                            mapObservers.add(
                                 layer.watch("loaded", () => {
                                     this.updateSelectableLayers();
                                 })
@@ -147,7 +161,7 @@ export default class LabelingController {
 
                     if (loaded && layer?.sublayers?.length >= 1) {
                         layer.sublayers.forEach(() => {
-                            layerObservers.add(
+                            mapObservers.add(
                                 layer.watch("loaded", () => {
                                     this.updateSelectableLayers();
                                 })
@@ -157,13 +171,13 @@ export default class LabelingController {
                 })
             );
 
-            layerObservers.add(
+            mapObservers.add(
                 layer.watch("visible", visible => {
                     this.updateSelectableLayers();
 
                     if (visible && layer?.layers?.length >= 1)
                         layer.layers.forEach(layer => {
-                            layerObservers.add(
+                            mapObservers.add(
                                 layer.watch("visible", () => {
                                     this.updateSelectableLayers();
                                 })
@@ -172,7 +186,7 @@ export default class LabelingController {
 
                     if (visible && layer?.sublayers?.length >= 1) {
                         layer.sublayers.forEach(() => {
-                            layerObservers.add(
+                            mapObservers.add(
                                 layer.watch("visible", () => {
                                     this.updateSelectableLayers();
                                 })
@@ -183,7 +197,7 @@ export default class LabelingController {
             );
         });
 
-        return layerObservers;
+        return mapObservers;
     }
 
     private updateSelectableLayers() {
@@ -191,11 +205,37 @@ export default class LabelingController {
         const mapWidgetModel = this._mapWidgetModel!;
 
         const layers = mapWidgetModel.map.layers;
-        const flattenedLayer = this.getFlattenLayers(layers);
+        const flattenedLayers = this.getFlattenLayers(layers);
+        this.getView().then(view => {
+            model.layers = this.filterLayers(flattenedLayers, view);
+        });
+    }
 
-        model.layers = flattenedLayer.items.filter((layer: __esri.Layer) =>
-            layer.title && layer.visible && (layer.type === "feature" || layer.type === "map-image")
+    private filterLayers(layers: Collection<__esri.Layer>, view: __esri.View): Array<__esri.Layer> {
+        const titledLayers = layers.filter((layer) => layer.title !== undefined && layer.title !== null && layer.title !== "");
+        const usableTypeLayers = titledLayers.filter((layer) => layer.type === "feature" || layer.type === "map-image");
+        const visibleLayers = usableTypeLayers.filter((layer) =>
+            this.layerAndAllParentLayersVisible(layer) && this.isVisibleAtScale(layer, view.scale)
         );
+
+        return Array.from(visibleLayers);
+    }
+
+    private layerAndAllParentLayersVisible(layer: __esri.Layer): boolean {
+        if (layer.parent && layer.parent.declaredClass !== "esri.Map") {
+            return layer.visible && this.layerAndAllParentLayersVisible(layer?.parent);
+        } else {
+            return layer.visible;
+        }
+    }
+
+    private isVisibleAtScale(layer: __esri.Layer, scale: number) {
+        const minScale = layer.minScale || 0;
+        const maxScale = layer.maxScale || 0;
+        if (minScale === 0 && maxScale === 0) {
+            return true;
+        }
+        return scale >= maxScale && (minScale !== 0 ? scale <= minScale : true);
     }
 
     private activateFeatureSelection(): void {
