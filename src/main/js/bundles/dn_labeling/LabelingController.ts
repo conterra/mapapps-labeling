@@ -363,7 +363,7 @@ export default class LabelingController {
 
         this.addFieldLabelsToFeature(feature);
 
-        if (model.showFeatureEdgeLengths) {
+        if (model.showFeatureEdgeLengths && feature.geometry.type === "polygon") {
             this.labelCreator.getEdgeLengthLabels(feature)
                 .then(labels => labels.forEach((label) => this.addLabelToMap(label, feature, "edge")));
         }
@@ -382,6 +382,15 @@ export default class LabelingController {
             if (labelDef.prefix || labelDef.postfix) {
                 label = `${labelDef.prefix} ${value} ${labelDef.postfix}`;
             }
+            labelStrings.push(label);
+        }
+
+        if (feature.geometry.type === "polyline" && model.showFeatureEdgeLengths) {
+            const attributeName = "Länge";
+            const attributeValue = attributes["Shape__Length"];
+            const value = attributeValue ? attributeValue : "";
+            const roundedValue = value.toFixed(2);
+            const label = `${attributeName}: ${roundedValue}`;
             labelStrings.push(label);
         }
 
