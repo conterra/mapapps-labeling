@@ -19,10 +19,12 @@ import Vue from "apprt-vue/Vue";
 import VueDijit from "apprt-vue/VueDijit";
 import LabelingWidget from "./LabelingWidget.vue";
 import type {InjectedReference} from "apprt-core/InjectedReference";
+import { Messages } from "./nls/bundle";
 
 export default class LabelingWidgetFactory {
 
     private vm? : Vue;
+    private _i18n!: InjectedReference<Messages>;
     private _properties: InjectedReference<any>;
     private _labelingModel: InjectedReference<any>;
     private labelingBinding?: Bindable;
@@ -43,6 +45,7 @@ export default class LabelingWidgetFactory {
 
     initComponent() :void {
         const vm: InjectedReference<any> = this.vm = new Vue(LabelingWidget);
+        vm.i18n = this._i18n.get().ui;
 
         const labelingModel = this._labelingModel;
         const controller = this._controller;
@@ -52,13 +55,8 @@ export default class LabelingWidgetFactory {
         });
 
         this.labelingBinding = Binding.for(vm, labelingModel)
-            .syncAll("active")
-            .syncAllToLeft("layers")
-            .syncAll("selectedLayer")
-            .syncAllToLeft("fields")
-            .syncAll("selectedFields")
-            .syncAll("showFeatureEdgeLengths")
-            .syncAll("syncChanges")
+            .syncAll("active", "selectedLayer", "selectedFields", "showFeatureEdgeLengths", "edgeLengthsDisabled")
+            .syncAllToLeft("layers", "fields")
             .enable()
             .syncToLeftNow();
     }

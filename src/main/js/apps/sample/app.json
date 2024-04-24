@@ -42,6 +42,7 @@
     "bundles": {
         "dn_labeling": {
             "Config": {
+                "clickTolerance": 10,
                 "hoverSymbol": {
                     "type": "simple-marker",
                     "style": "circle",
@@ -125,6 +126,18 @@
                             "id": "flur_ham",
                             "type": "AGS_FEATURE",
                             "url": "https://services2.arcgis.com/jUpNdisbWqRpMo35/ArcGIS/rest/services/Geb%C3%A4ude_Hamburg/FeatureServer/0"
+                        },
+                        {
+                            "title": "Punkte: Baumkataster",
+                            "id": "baum_kataster",
+                            "type": "AGS_FEATURE",
+                            "url": "https://services.conterra.de/arcgis/rest/services/mapapps/Baumkataster_Arten/FeatureServer/0"
+                        },
+                        {
+                            "title": "Linien: Feldnotizen",
+                            "id": "fieldnotes_lines",
+                            "type": "AGS_FEATURE",
+                            "url": "https://services.arcgis.com/ObdAEOfl1Z5LP2D0/arcgis/rest/services/Feldnotizen_erfassen/FeatureServer/1"
                         }
                     ]
                 },

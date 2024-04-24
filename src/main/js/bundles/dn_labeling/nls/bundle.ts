@@ -29,10 +29,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module.exports = {
+const i18n = {
     root: {
         bundleName: "Labeling Bundle",
-        bundleDescription: "This bundle labels features with border length and optional additional attributes."
+        bundleDescription: "This bundle labels features with border length and optional additional attributes.",
+        ui: {
+            selectionTitle: "Select Layer",
+            selectionFields: "Select Fields",
+            edgesLabel: "Label Edge Lengths",
+            autoUpdate: "Keep updated"
+        }
     },
     de: true
 };
+
+export type Messages = (typeof i18n)["root"];
+export interface MessagesReference {
+    get: () => Messages
+}
+export default i18n;

@@ -25,7 +25,7 @@ function defineProperties<Impl, P>(mutableDefinition: any, mutableProperties: {
     fields: [];
     selectedFields: [];
     showFeatureEdgeLengths: false;
-    syncChanges: true;
+    edgeLengthsDisabled: false;
 }): Impl & MutableType<P> {
     properties(mutableDefinition, mutableProperties);
     return mutableDefinition;
@@ -38,11 +38,11 @@ interface LabelingModelProps {
     active: boolean;
     labels: Array<any>;
     layers: Array<any>;
-    selectdLayer: any;
+    selectedLayer: __esri.Layer;
     fields: Array<any>;
     selectedFields: Array<any>;
     showFeatureEdgeLengths: boolean;
-    syncChanges: boolean;
+    edgeLengthsDisabled: boolean;
 }
 
 export default defineProperties<LabelingModel, LabelingModelProps>(LabelingModel,
@@ -54,5 +54,5 @@ export default defineProperties<LabelingModel, LabelingModelProps>(LabelingModel
         fields: [],
         selectedFields: [],
         showFeatureEdgeLengths: false,
-        syncChanges: true
+        edgeLengthsDisabled: false
     });

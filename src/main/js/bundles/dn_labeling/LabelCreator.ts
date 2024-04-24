@@ -14,7 +14,7 @@
 /// limitations under the License.
 ///
 
-import * as GeomEngineAsync from "esri/geometry/geometryEngineAsync";
+import { generalize, planarLength, geodesicLength } from "esri/geometry/geometryEngineAsync";
 import Polyline from "esri/geometry/Polyline";
 import Graphic from "esri/Graphic";
 import Point from "esri/geometry/Point";
@@ -37,7 +37,7 @@ export default class LabelCreator {
         this.lengthUnit = lengthUnit;
     }
 
-    public async getEdgeLengthLabels(feature: __esri.Feature): Promise<any> {
+    public async getEdgeLengthLabels(feature: __esri.Graphic): Promise<any> {
         const config = this.generalizationConfig;
         const deviation = config.maxDeviation;
         const removeDegenParts = config.removeDegenerateParts;
@@ -46,21 +46,26 @@ export default class LabelCreator {
         const geometry = feature.geometry;
         const view = await this.getView();
         const spatialReference = view.spatialReference;
-
-        return GeomEngineAsync
-            .generalize(geometry, deviation, removeDegenParts, unit)
-            .then(geom => this.collectLabels(spatialReference, geom));
+        return generalize(geometry, deviation, removeDegenParts, unit).then(geom =>
+            this.collectLabels(spatialReference, geom)
+        );
     }
 
-    private collectLabels(spatialReference: __esri.SpatialReference, geometry: __esri.Polygon): Promise<any> {
+    private collectLabels(spatialReference: __esri.SpatialReference, geometry:__esri.Geometry): Promise<any> {
         const promises = [];
-        for (const ring of geometry.rings) {
-            const lines = this.getLinesFromRing(ring, spatialReference);
-            for (const line of lines) {
-                const promise = this.getLabelForLine(line, spatialReference);
-                promises.push(promise);
+
+        if (geometry.type === "polygon") {
+            for (const ring of geometry.rings) {
+                const lines = this.getLinesFromRing(ring, spatialReference);
+                for (const line of lines) {
+                    const promise = this.getLabelForLine(line, spatialReference);
+                    promises.push(promise);
+                }
             }
+        } else if (geometry.type === "polyline") {
+            promises.push(this.getLabelForLine(geometry, spatialReference));
         }
+
         return Promise.all(promises);
     }
 
@@ -78,16 +83,12 @@ export default class LabelCreator {
         return lines;
     }
 
-    private getLabelForLine(line: __esri.Polyline, spatialReference: __esri.SpatialReference) {
+    private getLabelForLine(line: __esri.Polyline, spatialReference: __esri.SpatialReference): Promise<__esri.Graphic> {
         const center = this.getCenterFromLine(line, spatialReference);
         if (this.spatialReferenceIsProjected(spatialReference))
-            return GeomEngineAsync
-                .planarLength(line, this.lengthUnit)
-                .then(this.createLengthLabel.bind(this, center));
+            return planarLength(line, this.lengthUnit).then(this.createLengthLabel.bind(this, center));
         else
-            return GeomEngineAsync
-                .geodesicLength(line, this.lengthUnit)
-                .then(this.createLengthLabel.bind(this, center));
+            return geodesicLength(line, this.lengthUnit).then(this.createLengthLabel.bind(this, center));
     }
 
     private createLengthLabel(geometry: __esri.Geometry, length: number): __esri.Graphic {

@@ -19,7 +19,7 @@
     <div class="labelingWidgetContainer">
         <div class="__selections-div">
             <div>
-                <h4>Select Layer:</h4>
+                <h4>{{ i18n.selectionTitle }}</h4>
                 <v-autocomplete
                     v-model="selectedLayer"
                     :items="layers"
@@ -55,7 +55,7 @@
                         </div>
                     </v-sheet>
                 </div>
-                <h4>Select Fields:</h4>
+                <h4>{{ i18n.selectionFields }}</h4>
                 <v-select
                     id="autocomplete"
                     v-model="selectedFields"
@@ -68,6 +68,7 @@
                     return-object
                     class="draggableSelect pt-1 mt-0"
                     clearable
+                    :disabled="!selectedLayer"
                 >
                     <template #selection="data">
                         <draggable
@@ -115,13 +116,8 @@
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
                     color="primary"
-                    label="Kantenlängen beschriften"
-                />
-                <v-switch
-                    v-model="syncChanges"
-                    class="controls circumference-switch"
-                    color="primary"
-                    label="Änderungen automatisch anwenden"
+                    :label="i18n.edgesLabel"
+                    :disabled="edgeLengthsDisabled"
                 />
             </div>
             <div>
@@ -150,11 +146,11 @@
     </div>
 </template>
 <script>
-    import * as draggable from 'vuedraggable';
+    import draggable from 'vuedraggable';
     import Bindable from "apprt-vue/mixins/Bindable";
     export default {
         components: {
-            "draggable": draggable.draggable
+            "draggable": draggable
         },
         mixins: [Bindable],
         props: {
@@ -165,6 +161,16 @@
             layers: {
                 type: Array,
                 default: () => []
+            },
+            edgeLengthsDisabled: {
+                type: Boolean,
+                default: false
+            },
+            i18n: {
+                type: Object,
+                default: function () {
+                    return {};
+                }
             }
         },
         data: function () {
@@ -183,8 +189,7 @@
                 editedField: {
                     prefix: "",
                     postfix: ""
-                },
-                syncChanges: true
+                }
             };
         },
         computed: {

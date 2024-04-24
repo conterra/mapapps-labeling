@@ -9,7 +9,11 @@
     ],
     "main": "",
     "dependencies": {
-        "vuedraggable" : "^2.24.0"
+        "ct" : "^4.13.0",
+        "apprt-core": "^4.13.0",
+        "apprt-binding": "^4.13.0",
+        "apprt-vue": "^4.13.0",
+        "esri": "^4.22.0"
     },
     "productName": "devnet-mapapps-labeling",
 	"layout-widgets": [
@@ -47,7 +51,6 @@
 	"components": [
         {
             "name": "Config",
-            "impl": "./LabelingModel",
             "provides": "dn_labeling.LabelingModel",
             "propertiesConstructor": true,
             "properties": {
