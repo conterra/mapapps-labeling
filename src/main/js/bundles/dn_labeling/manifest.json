@@ -54,6 +54,7 @@
             "provides": "dn_labeling.LabelingModel",
             "propertiesConstructor": true,
             "properties": {
+                "clickTolerance": 10,
                 "hoverSymbol": {
 					"type": "simple-marker",
 					"style": "circle",
