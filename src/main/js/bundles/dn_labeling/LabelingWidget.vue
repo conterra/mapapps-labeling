@@ -119,12 +119,6 @@
                     :label="i18n.edgesLabel"
                     :disabled="edgeLengthsDisabled"
                 />
-                <v-switch
-                    v-model="syncChanges"
-                    class="controls circumference-switch"
-                    color="primary"
-                    :label="i18n.autoUpdate"
-                />
             </div>
             <div>
                 <v-btn
@@ -195,8 +189,7 @@
                 editedField: {
                     prefix: "",
                     postfix: ""
-                },
-                syncChanges: true
+                }
             };
         },
         computed: {
