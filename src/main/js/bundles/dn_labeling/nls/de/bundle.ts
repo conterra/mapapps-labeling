@@ -36,9 +36,17 @@ export default {
     bundleName: "Labeling Bundle",
     bundleDescription: "Dieses Bundle beschriftet Features mit Kantenlängen und beliebigen zusätzlichen Attributen.",
     ui: {
+        title: "Beschriftungswerkzeug",
+        tooltip: "Beschriftungswerkzeug",
         selectionTitle: "Layer auswählen",
         selectionFields: "Felder auswählen",
         edgesLabel: "Kantenlängen beschriften",
-        autoUpdate: "Änderungen automatisch anwenden"
+        autoUpdate: "Änderungen automatisch anwenden",
+
+        labeling: {
+            start: "Beschriften Starten",
+            stop: "Beschriften beenden",
+            delete: "Beschriftungen löschen"
+        }
     }
 } satisfies Messages;

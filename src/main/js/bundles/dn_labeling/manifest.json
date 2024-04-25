@@ -20,7 +20,7 @@
 		{
 			"widgetRole": "labelingWidget",
 			"window": {
-				"title": "Labeling Tool",
+				"title": "${ui.title}",
 				"dockTool": "labelingToggleTool",
                 "closable": true,
                 "maximizable": false,
@@ -119,8 +119,8 @@
 			"propertiesConstructor": true,
 			"properties": {
 				"id": "labelingToggleTool",
-				"title": "Labeling Tool",
-				"tooltip": "Labeling Tool",
+				"title": "${ui.title}",
+				"tooltip": "${ui.tooltip}",
 				"iconClass": "esri-icon-labels",
 				"toolRole": "toolset",
 				"togglable": true,

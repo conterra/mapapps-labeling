@@ -126,20 +126,23 @@
                     color="primary"
                     @click.native="setLabeling"
                 >
-                    Start Labeling
+                    <v-icon>icon-play</v-icon>
+                    {{ i18n.labeling.start }}
                 </v-btn>
                 <v-btn
                     v-else
                     color="primary"
                     @click.native="setLabeling"
                 >
-                    Stop Labeling
+                    <v-icon>icon-pause</v-icon>
+                    {{ i18n.labeling.stop }}
                 </v-btn>
                 <v-btn
                     color="secondary"
                     @click.native="deleteLabel"
                 >
-                    Delete labels
+                    <v-icon>icon-trashcan-detailed</v-icon>
+                    {{ i18n.labeling.delete }}
                 </v-btn>
             </div>
         </div>

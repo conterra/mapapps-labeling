@@ -34,10 +34,18 @@ const i18n = {
         bundleName: "Labeling Bundle",
         bundleDescription: "This bundle labels features with border length and optional additional attributes.",
         ui: {
+            title: "Labeling Tool",
+            tooltip: "Labeling Tool",
             selectionTitle: "Select Layer",
             selectionFields: "Select Fields",
             edgesLabel: "Label Edge Lengths",
-            autoUpdate: "Keep updated"
+            autoUpdate: "Keep updated",
+
+            labeling: {
+                start: "Start Labeling",
+                stop: "Stop Labeling",
+                delete: "Delete Labels"
+            }
         }
     },
     de: true
