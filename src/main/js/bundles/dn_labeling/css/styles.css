@@ -76,3 +76,7 @@
     display: none;
 }
 
+.ctAppRoot .labelingWidget .labelingWidgetContainer .__selections-div .v-select__selections .v-chip span {
+    color: #45474d;
+}
+
