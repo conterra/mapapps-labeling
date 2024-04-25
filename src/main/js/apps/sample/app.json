@@ -43,6 +43,7 @@
         "dn_labeling": {
             "Config": {
                 "clickTolerance": 10,
+                "allowEmptyPrefix": true,
                 "hoverSymbol": {
                     "type": "simple-marker",
                     "style": "circle",

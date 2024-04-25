@@ -26,6 +26,7 @@ function defineProperties<Impl, P>(mutableDefinition: any, mutableProperties: {
     selectedFields: [];
     showFeatureEdgeLengths: false;
     edgeLengthsDisabled: false;
+    allowEmptyPrefix: false;
 }): Impl & MutableType<P> {
     properties(mutableDefinition, mutableProperties);
     return mutableDefinition;
@@ -43,6 +44,7 @@ interface LabelingModelProps {
     selectedFields: Array<any>;
     showFeatureEdgeLengths: boolean;
     edgeLengthsDisabled: boolean;
+    allowEmptyPrefix: boolean;
 }
 
 export default defineProperties<LabelingModel, LabelingModelProps>(LabelingModel,
@@ -54,5 +56,6 @@ export default defineProperties<LabelingModel, LabelingModelProps>(LabelingModel
         fields: [],
         selectedFields: [],
         showFeatureEdgeLengths: false,
-        edgeLengthsDisabled: false
+        edgeLengthsDisabled: false,
+        allowEmptyPrefix: false
     });

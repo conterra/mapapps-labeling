@@ -378,9 +378,11 @@ export default class LabelingController {
             const attributeName = labelDef.name;
             const attributeValue = attributes[attributeName];
             const value = attributeValue ? attributeValue : "";
-            let label = `${attributeName}:${value}`;
+            let label = `${attributeName}: ${value}`;
             if (labelDef.prefix || labelDef.postfix) {
                 label = `${labelDef.prefix} ${value} ${labelDef.postfix}`;
+            } else if (model!.allowEmptyPrefix) {
+                label = `${value}`;
             }
             labelStrings.push(label);
         }
