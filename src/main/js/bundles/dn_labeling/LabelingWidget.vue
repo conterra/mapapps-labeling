@@ -46,11 +46,11 @@
                         <div id="editText">
                             <v-text-field
                                 v-model="editedField.prefix"
-                                label="Präfix"
+                                :label="i18n.prefix"
                             />
                             <v-text-field
                                 v-model="editedField.postfix"
-                                label="Postfix"
+                                :label="i18n.postfix"
                             />
                         </div>
                     </v-sheet>

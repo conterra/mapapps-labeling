@@ -40,6 +40,8 @@ const i18n = {
             selectionFields: "Select Fields",
             edgesLabel: "Label Edge Lengths",
             autoUpdate: "Keep updated",
+            prefix: "Prefix",
+            postfix: "Postfix",
 
             labeling: {
                 start: "Start Labeling",

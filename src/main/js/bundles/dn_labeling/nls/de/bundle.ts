@@ -42,6 +42,8 @@ export default {
         selectionFields: "Felder auswählen",
         edgesLabel: "Kantenlängen beschriften",
         autoUpdate: "Änderungen automatisch anwenden",
+        prefix: "Präfix",
+        postfix: "Postfix",
 
         labeling: {
             start: "Beschriften Starten",
