@@ -151,7 +151,7 @@ export default class LabelingController {
             })
         );
 
-        layers.forEach(layer => {
+        this.getFlattenLayers(layers).forEach(layer => {
             mapObservers.add(
                 layer.watch("loaded", loaded => {
                     this.updateSelectableLayers();
