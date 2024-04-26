@@ -18,6 +18,7 @@ import Graphic from "esri/Graphic";
 import Draw from "esri/views/draw/Draw";
 import Point from "esri/geometry/Point";
 import Extent from "esri/geometry/Extent";
+import { geodesicLength, planarLength } from "esri/geometry/geometryEngine";
 import LabelCreator from "./LabelCreator";
 import { watch } from "esri/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
@@ -389,7 +390,7 @@ export default class LabelingController {
 
         if (feature.geometry.type === "polyline" && model.showFeatureEdgeLengths) {
             const attributeName = "Länge";
-            const attributeValue = attributes["Shape__Length"];
+            const attributeValue = this.getPolyLineLength(feature.geometry);
             const value = attributeValue ? attributeValue : "";
             const roundedValue = value.toFixed(2);
             const label = `${attributeName}: ${roundedValue}`;
@@ -457,6 +458,19 @@ export default class LabelingController {
 
     private getFlattenLayers(layers: __esri.Collection<__esri.Layer>): __esri.Collection<__esri.Layer> {
         return layers.flatten(item => item.layers || item.sublayers);
+    }
+
+    private getPolyLineLength(line: __esri.Polyline): number {
+        const model = this._labelingModel;
+        let length: number;
+
+        if (line.spatialReference.isWebMercator || line.spatialReference.wkid === 4326) {
+            length = geodesicLength(line, model.lengthUnit);
+        } else {
+            length = planarLength(line, model.lengthUnit);
+        }
+
+        return length;
     }
 
 }
