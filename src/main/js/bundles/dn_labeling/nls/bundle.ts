@@ -42,11 +42,25 @@ const i18n = {
             autoUpdate: "Keep updated",
             prefix: "Prefix",
             postfix: "Postfix",
+            lengthPrefix: "Length",
 
             labeling: {
                 start: "Start Labeling",
                 stop: "Stop Labeling",
                 delete: "Delete Labels"
+            },
+
+            lengthUnitAbbreviations: {
+                milimeters: "mm",
+                centimeters: "cm",
+                decimeters: "dm",
+                meters: "m",
+                kilometers: "km",
+                inches: "in",
+                feet: "ft",
+                yards: "yd",
+                miles: "mi",
+                "nautical-miles": "nmi"
             }
         }
     },

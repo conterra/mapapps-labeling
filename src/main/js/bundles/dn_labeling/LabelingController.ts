@@ -372,6 +372,7 @@ export default class LabelingController {
 
     private addFieldLabelsToFeature(feature): void {
         const model = this._labelingModel;
+        const i18n = this._i18n.get();
 
         const attributes = feature.attributes;
         const labelStrings = [];
@@ -389,11 +390,10 @@ export default class LabelingController {
         }
 
         if (feature.geometry.type === "polyline" && model.showFeatureEdgeLengths) {
-            const attributeName = "Länge";
             const attributeValue = this.getPolyLineLength(feature.geometry);
             const value = attributeValue ? attributeValue : "";
             const roundedValue = value.toFixed(2);
-            const label = `${attributeName}: ${roundedValue}`;
+            const label = `${i18n.ui.lengthPrefix}: ${roundedValue} ${i18n.ui.lengthUnitAbbreviations[model.lengthUnit]}`;
             labelStrings.push(label);
         }
 

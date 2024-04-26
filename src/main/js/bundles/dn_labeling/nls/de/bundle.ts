@@ -44,11 +44,25 @@ export default {
         autoUpdate: "Änderungen automatisch anwenden",
         prefix: "Präfix",
         postfix: "Postfix",
+        lengthPrefix: "Länge",
 
         labeling: {
             start: "Beschriften Starten",
             stop: "Beschriften beenden",
             delete: "Beschriftungen löschen"
+        },
+
+        lengthUnitAbbreviations: {
+            milimeters: "mm",
+            centimeters: "cm",
+            decimeters: "dm",
+            meters: "m",
+            kilometers: "km",
+            inches: "in",
+            feet: "ft",
+            yards: "yd",
+            miles: "mi",
+            "nautical-miles": "nmi"
         }
     }
 } satisfies Messages;
