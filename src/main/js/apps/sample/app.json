@@ -97,11 +97,20 @@
                             "type": "GROUP",
                             "layers": [
                                 {
-                                    "id": "flurst_berlin",
-                                    "type": "AGS_FEATURE",
-                                    "url": "https://services2.arcgis.com/jUpNdisbWqRpMo35/ArcGIS/rest/services/Flurst_Berlin/FeatureServer/0",
-                                    "outFields": [
-                                        "*"
+                                    "id": "g2",
+                                    "title": "Group",
+                                    "type": "GROUP",
+                                    "visible": false,
+                                    "layers": [
+                                        {
+                                            "id": "flurst_berlin",
+                                            "type": "AGS_FEATURE",
+                                            "url": "https://services2.arcgis.com/jUpNdisbWqRpMo35/ArcGIS/rest/services/Flurst_Berlin/FeatureServer/0",
+                                            "visible": true,
+                                            "outFields": [
+                                                "*"
+                                            ]
+                                        }
                                     ]
                                 }
                             ]
