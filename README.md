@@ -11,9 +11,6 @@ The Labeling Bundle labels features with border length and optional additional a
 https://demos.conterra.de/mapapps/resources/apps/downloads_labeling/index.html
 
 ## Installation Guide
-**Requirements:**
-- map.apps 4.13.0 or later
-
 Simply add the bundle "dn_labeling" to your app.
 
 [dn_labeling Documentation](https://github.com/conterra/mapapps-labeling/tree/main/src/main/js/bundles/dn_labeling)
