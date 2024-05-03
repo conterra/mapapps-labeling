@@ -55,6 +55,7 @@
             "propertiesConstructor": true,
             "properties": {
                 "clickTolerance": 10,
+                "loadTimeTolerance": 0,
                 "allowEmptyPrefix": true,
                 "hoverSymbol": {
 					"type": "simple-marker",

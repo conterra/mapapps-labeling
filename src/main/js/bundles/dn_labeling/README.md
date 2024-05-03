@@ -15,6 +15,8 @@ Additonally, the edges of the features can be measured and labeled accordingly.
 ```json
 "Config": {
     "clickTolerance": 10,
+    "loadTimeTolerance": 0,
+    "allowEmptyPrefix": true,
     "hoverSymbol": {
         "type": "simple-marker",
         "style": "circle",
@@ -45,6 +47,7 @@ Additonally, the edges of the features can be measured and labeled accordingly.
 | Property                             | Type               | Possible Values               | Default        | Description                                                                                                                                                                           |
 |--------------------------------------|--------------------|-------------------------------|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | clickTolerance                       | Number             |                               | ```10```       | Buffer size around selection to ease selections.                                                                                                                                      |
+| loadTimeTolerance                    | Number             |                               | ```0```        | Customized delay to allow layers to load before filtering.                                                                                                                            |
 | allowEmptyPrefix                     | Boolean            | ```true``` &#124; ```false``` | ```false```    | Allows/prohibits use of empty prefix slots.                                                                                                                                           |
 | hoverSymbol                          | SimpleMarkerSymbol |                               |                | Marker placed at the cursor to symbolize activity state. See [SimpleMarkerSymbol](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-SimpleMarkerSymbol.html) |
 | textSymbol                           | TextSymbol         |                               |                | Styling applied to labels. See [TextSymbol](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html)                                               |

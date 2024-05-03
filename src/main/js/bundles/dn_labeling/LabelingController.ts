@@ -22,6 +22,7 @@ import { geodesicLength, planarLength } from "esri/geometry/geometryEngine";
 import LabelCreator from "./LabelCreator";
 import { watch } from "esri/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
+import async from "apprt-core/async";
 
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import LabelingModel from "./LabelingModel";
@@ -214,7 +215,14 @@ export default class LabelingController {
         const layers = mapWidgetModel.map.layers;
         const flattenedLayers = this.getFlattenLayers(layers);
         this.getView().then(view => {
-            model.layers = this.filterLayers(flattenedLayers, view);
+            const delay = model?.loadTimeTolerance;
+            if (delay && delay > 0) {
+                async(() => {
+                    model.layers = this.filterLayers(flattenedLayers, view);
+                }, delay);
+            } else {
+                model.layers = this.filterLayers(flattenedLayers, view);
+            }
         });
     }
 
