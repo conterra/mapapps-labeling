@@ -32,9 +32,6 @@
             "dn_labeling",
             "vuedraggable"
         ],
-        "require": [
-            "${app}.app"
-        ],
         "i18n": [
             "bundle"
         ]
