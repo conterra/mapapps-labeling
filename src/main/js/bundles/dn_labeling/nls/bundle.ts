@@ -38,6 +38,8 @@ const i18n = {
             tooltip: "Labeling Tool",
             selectionTitle: "Select Layer",
             selectionFields: "Select Fields",
+            editAttributeLabel: "Edit attribute label",
+            deleteAttributeLabel: "Delete attribute label",
             edgesLabel: "Label Edge Lengths",
             autoUpdate: "Keep updated",
             prefix: "Prefix",

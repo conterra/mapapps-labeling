@@ -57,6 +57,7 @@
             </v-sheet>
             <v-sheet class="my-1">
                 <h3>{{ i18n.selectionFields }}</h3>
+                <!--TODO: Element not focusable with keyboard, even when not disabled-->
                 <v-select
                     id="autocomplete"
                     v-model="selectedFields"
@@ -92,18 +93,38 @@
 
                                 <span>{{ data.item.name }}</span>
                                 <span>
-                                    <v-btn
-                                        icon
-                                        @click="setEdit(data.item)"
+                                    <v-tooltip
+                                        top
+                                        open-delay="800"
                                     >
-                                        <v-icon small>edit</v-icon>
-                                    </v-btn>
-                                    <v-btn
-                                        icon
-                                        @click="remove(data.item)"
+                                        <template #activator="{ on }">
+                                            <v-btn
+                                                icon
+                                                :aria-label="i18n.editAttributeLabel"
+                                                v-on="on"
+                                                @click="setEdit(data.item)"
+                                            >
+                                                <v-icon small>edit</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ i18n.editAttributeLabel }}</span>
+                                    </v-tooltip>
+                                    <v-tooltip
+                                        top
+                                        open-delay="800"
                                     >
-                                        <v-icon small>close</v-icon>
-                                    </v-btn>
+                                        <template #activator="{ on }">
+                                            <v-btn
+                                                icon
+                                                :aria-label="i18n.deleteAttributeLabel"
+                                                v-on="on"
+                                                @click="remove(data.item)"
+                                            >
+                                                <v-icon small>close</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ i18n.deleteAttributeLabel }}</span>
+                                    </v-tooltip>
                                 </span>
                             </v-chip>
                         </draggable>
@@ -124,23 +145,18 @@
             </div>
             <div>
                 <v-btn
-                    v-if="!active"
                     color="primary"
+                    :aria-pressed="active"
+                    :disabled="selectedFields.length === 0"
                     @click.native="setLabeling"
                 >
-                    <v-icon>icon-play</v-icon>
-                    {{ i18n.labeling.start }}
+                    <v-icon>{{ !active ? "icon-play" : "icon-pause" }}</v-icon>
+                    {{ !active ? i18n.labeling.start : i18n.labeling.stop }}
                 </v-btn>
                 <v-btn
-                    v-else
-                    color="primary"
-                    @click.native="setLabeling"
-                >
-                    <v-icon>icon-pause</v-icon>
-                    {{ i18n.labeling.stop }}
-                </v-btn>
-                <v-btn
-                    color="secondary"
+                    color="error"
+                    outline
+                    :disabled="!selectedLayer || (selectedLayer && selectedFields.length === 0)"
                     @click.native="deleteLabel"
                 >
                     <v-icon>icon-trashcan-detailed</v-icon>

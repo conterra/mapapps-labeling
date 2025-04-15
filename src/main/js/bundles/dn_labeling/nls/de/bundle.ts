@@ -40,6 +40,8 @@ export default {
         tooltip: "Beschriftungswerkzeug",
         selectionTitle: "Layer auswählen",
         selectionFields: "Felder auswählen",
+        editAttributeLabel: "Attributbeschriftung bearbeiten",
+        deleteAttributeLabel: "Attributebeschriftung entfernen",
         edgesLabel: "Kantenlängen beschriften",
         autoUpdate: "Änderungen automatisch anwenden",
         prefix: "Präfix",
