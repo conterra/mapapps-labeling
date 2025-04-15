@@ -16,10 +16,10 @@
 
 -->
 <template>
-    <div class="labelingWidgetContainer">
-        <div class="__selections-div">
-            <div>
-                <h4>{{ i18n.selectionTitle }}</h4>
+    <div class="ct-labeling-widget">
+        <div class="ct-labeling-widget__selections">
+            <v-sheet class="mb-1">
+                <h3>{{ i18n.selectionTitle }}</h3>
                 <v-autocomplete
                     v-model="selectedLayer"
                     :items="layers"
@@ -31,31 +31,32 @@
                     hide-details
                     class="pt-0 mt-0 pb-2"
                 />
-            </div>
-            <div>
-                <div v-show="edit">
-                    <v-sheet elevation="12">
-                        <v-btn
-                            id="iconRight"
-                            icon
-                            small
-                            @click="edit = !edit"
-                        >
-                            <v-icon>close</v-icon>
-                        </v-btn>
-                        <div id="editText">
-                            <v-text-field
-                                v-model="editedField.prefix"
-                                :label="i18n.prefix"
-                            />
-                            <v-text-field
-                                v-model="editedField.postfix"
-                                :label="i18n.postfix"
-                            />
-                        </div>
-                    </v-sheet>
+            </v-sheet>
+            <v-sheet
+                v-show="edit"
+                class="my-1"
+            >
+                <v-btn
+                    id="iconRight"
+                    icon
+                    small
+                    @click="edit = !edit"
+                >
+                    <v-icon>close</v-icon>
+                </v-btn>
+                <div id="editText">
+                    <v-text-field
+                        v-model="editedField.prefix"
+                        :label="i18n.prefix"
+                    />
+                    <v-text-field
+                        v-model="editedField.postfix"
+                        :label="i18n.postfix"
+                    />
                 </div>
-                <h4>{{ i18n.selectionFields }}</h4>
+            </v-sheet>
+            <v-sheet class="my-1">
+                <h3>{{ i18n.selectionFields }}</h3>
                 <v-select
                     id="autocomplete"
                     v-model="selectedFields"
@@ -72,7 +73,7 @@
                 >
                     <template #selection="data">
                         <draggable
-                            :id="data.index"
+                            :id="`ct-labeling-attribute-${data.index}`"
                             :list="selectedFields"
                             v-bind="dragOptionsChips"
                             :move="move"
@@ -108,10 +109,11 @@
                         </draggable>
                     </template>
                 </v-select>
-            </div>
+            </v-sheet>
         </div>
-        <div class="__controls-div">
-            <div>
+        <v-divider />
+        <div class="ct-labeling-widget__controls-div">
+            <div class="my-1">
                 <v-switch
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
