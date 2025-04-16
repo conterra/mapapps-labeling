@@ -31,7 +31,7 @@
             .v-chip {
                 width: 98%;
 
-                .v-chip__content{
+                .v-chip__content {
                     width: 100%;
                     padding: 0;
                     cursor: move;
@@ -55,25 +55,16 @@
         }
     }
 
-    .v-btn--icon{
+    .v-btn--icon {
         margin: 0;
     }
 
-    /* TODO: remove usages of ID slectors */
-    #editText{
+    .ct-labeling-widget__edit-inputs {
         padding: 5px;
         margin: 10px;
     }
 
-    #iconRight{
-        float:  right;
-    }
-
-    #autocomplete {
-        display: none;
-    }
-
-    .draggableSelect.v-input--is-dirty .v-input__slot:before {
+    .ct-labeling-widget__draggable-select.v-input--is-dirty .v-input__slot:before {
         display: none;
     }
 

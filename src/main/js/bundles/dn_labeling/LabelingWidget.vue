@@ -34,17 +34,29 @@
             </v-sheet>
             <v-sheet
                 v-show="edit"
-                class="my-1"
+                class="my-1 ct-labeling-widget__edit-section"
             >
-                <v-btn
-                    id="iconRight"
-                    icon
-                    small
-                    @click="edit = !edit"
-                >
-                    <v-icon>close</v-icon>
-                </v-btn>
-                <div id="editText">
+                <div class="align-right">
+                    <v-tooltip
+                        top
+                        open-delay="800"
+                    >
+                        <template #activator="{ on }">
+                            <v-btn
+                                class="ct-labeling-widget__edit-close-section mr-2"
+                                icon
+                                small
+                                v-on="on"
+                                :aria-label="i18n.finishEditingAttributeLabel"
+                                @click="edit = !edit"
+                            >
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ i18n.finishEditingAttributeLabel }}</span>
+                    </v-tooltip>
+                </div>
+                <div class="ct-labeling-widget__edit-inputs">
                     <v-text-field
                         v-model="editedField.prefix"
                         :label="i18n.prefix"
@@ -59,7 +71,6 @@
                 <h3>{{ i18n.selectionFields }}</h3>
                 <!--TODO: Element not focusable with keyboard, even when not disabled-->
                 <v-select
-                    id="autocomplete"
                     v-model="selectedFields"
                     :items="fields"
                     rounded
@@ -68,7 +79,7 @@
                     label="Felder auswählen"
                     item-text="name"
                     return-object
-                    class="draggableSelect pt-1 mt-0"
+                    class="ct-labeling-widget__draggable-select pt-1 mt-0"
                     clearable
                     :disabled="!selectedLayer"
                 >

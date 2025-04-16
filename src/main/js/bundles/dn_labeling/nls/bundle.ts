@@ -39,6 +39,7 @@ const i18n = {
             selectionTitle: "Select Layer",
             selectionFields: "Select Fields",
             editAttributeLabel: "Edit attribute label",
+            finishEditingAttributeLabel: "Finish editing attribute label",
             deleteAttributeLabel: "Delete attribute label",
             edgesLabel: "Label Edge Lengths",
             autoUpdate: "Keep updated",
