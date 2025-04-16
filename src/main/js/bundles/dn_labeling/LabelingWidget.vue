@@ -46,10 +46,11 @@
                                 class="ct-labeling-widget__edit-close-section mr-2"
                                 icon
                                 small
-                                v-on="on"
                                 :aria-label="i18n.finishEditingAttributeLabel"
+                                v-on="on"
                                 @click="edit = !edit"
                             >
+                                <!--TODO: maybe change Icon!-->
                                 <v-icon>close</v-icon>
                             </v-btn>
                         </template>
