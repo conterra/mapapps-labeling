@@ -27,7 +27,7 @@
                     item-text="title"
                     return-object
                     single-line
-                    label="Layer auswählen"
+                    :label="i18n.selectionTitle"
                     hide-details
                     class="pt-0 mt-0 pb-2"
                 />
@@ -63,7 +63,7 @@
                     rounded
                     multiple
                     single-line
-                    label="Felder auswählen"
+                    :label="i18n.selectionFields"
                     item-text="name"
                     return-object
                     class="draggableSelect pt-1 mt-0"
