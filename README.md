@@ -8,7 +8,7 @@ The Labeling Bundle labels features with border length and optional additional a
 ![Screenshot App](https://github.com/conterra/mapapps-labeling/blob/main/screenshot.JPG)
 
 ## Sample App
-https://demos.conterra.de/mapapps/resources/apps/downloads_labeling/index.html
+https://demos.conterra.de/mapapps/resources/apps/public_demo_labeling/index.htm
 
 ## Installation Guide
 Simply add the bundle "dn_labeling" to your app.
