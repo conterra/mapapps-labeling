@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ctAppRoot .labelingWidget .labelingWidgetContainer {
+.ctAppRoot .ct-labeling-widget {
     display: flex;
     flex-direction: column;
     height: 100%;
+    justify-content: space-between;
 
-    .__selections-div {
+    .ct-labeling-widget__selections {
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
+        flex: 1 1 auto;
+        overflow: auto;
 
         .v-select__selections {
             display: grid;
@@ -31,18 +33,19 @@
             .v-chip {
                 width: 98%;
 
-                .v-chip__content{
+                .v-chip__content {
                     width: 100%;
                     padding: 0;
+                    cursor: move;
                 }
             }
         }
     }
 
-    .__controls-div {
+    .ct-labeling-widget__controls-div {
         display: flex;
         flex-direction: column;
-        flex-shrink: 1;
+        flex: 0 0 auto;
 
         .circumference-switch {
             margin-top: 0;
@@ -53,30 +56,23 @@
             margin-left: 0;
         }
     }
+
+    .v-btn--icon {
+        margin: 0;
+    }
+
+    .ct-labeling-widget__edit-inputs {
+        padding: 5px;
+        margin: 10px;
+    }
+
+    .ct-labeling-widget__draggable-select.v-input--is-dirty .v-input__slot:before {
+        display: none;
+    }
+
+    .ct-labeling-widget__selections .v-select__selections .v-chip span {
+        color: #45474d;
+    }
 }
 
-.ctAppRoot .labelingWidget .v-btn--icon{
-    margin: 0;
-}
-
-.ctAppRoot .labelingWidget #editText{
-    padding: 5px;
-    margin: 10px;
-}
-
-.ctAppRoot .labelingWidget #iconRight{
-    float:  right;
-}
-
-.ctAppRoot .labelingWidget #autocomplete {
-    display: none;
-}
-
-.ctAppRoot .labelingWidget .draggableSelect.v-input--is-dirty .v-input__slot:before {
-    display: none;
-}
-
-.ctAppRoot .labelingWidget .labelingWidgetContainer .__selections-div .v-select__selections .v-chip span {
-    color: #45474d;
-}
 
