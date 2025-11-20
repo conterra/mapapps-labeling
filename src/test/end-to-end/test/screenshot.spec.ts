@@ -22,23 +22,10 @@ import { MapCanvas } from "./components/map-canvas";
 // test used to generate a screenshot for the bundle documentation
 test('Create Screenshot for GitHub Page', async ({ page }) => {
     await page.goto('http://localhost:9090/');
-
     const canvas = new MapCanvas(page);
     await canvas.loaded();
-    await page.getByRole('textbox', { name: 'Select Layer' }).click();
-    await page.getByRole('option', { name: 'Precints' }).click();
-    await page.getByText('Select Fieldsarrow_drop_down').click();
-    await page.getByRole('option', { name: 'NAME' }).click();
-    await page.getByRole('option', { name: 'FLAECHE' }).click();
-    await page.getByRole('button', { name: 'Start Labeling' }).click();
-    await page.locator('canvas').click({
-        position: {
-            x: 859,
-            y: 341
-        }
-    });
+    await canvas.clickOnMap({ x: 400, y: 400 });
 
-    await page.waitForTimeout(1000);
     await expectToMatchScreenshot(page, "screenshot.png", {
         timeout: 10000
     });
