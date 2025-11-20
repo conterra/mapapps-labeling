@@ -102,6 +102,9 @@ importers:
       vue-template-compiler:
         specifier: 2.7.16
         version: 2.7.16
+      vuedraggable:
+        specifier: 2.24.0
+        version: 2.24.0
 
 packages:
 
@@ -5371,6 +5374,9 @@ packages:
   vue@2.7.16:
     resolution: {integrity: sha512-4gCtFXaAA3zYZdTp5s4Hl2sozuySsgz4jy1EnpBHNfpMa9dK1ZCG7viqBPCwXtmgc8nHqUsAu3G4gtmXkkY3Sw==}
     deprecated: Vue 2 has reached EOL and is no longer actively maintained. See https://v2.vuejs.org/eol/ for more details.
+
+  vuedraggable@2.24.0:
+    resolution: {integrity: sha512-IlslPpc+iZ2zPNSJbydFZIDrE+don5u+Nc/bjT2YaF+Azidc+wxxJKfKT0NwE68AKk0syb0YbZneAcnynqREZQ==}
 
   walk-back@2.0.1:
     resolution: {integrity: sha512-Nb6GvBR8UWX1D+Le+xUq0+Q1kFmRBIWVrfLnQAOmcpEzA9oAxwJ9gIr36t9TWYfzvWRvuMtjHiVsJYEkXWaTAQ==}
@@ -11551,6 +11557,10 @@ snapshots:
     dependencies:
       '@vue/compiler-sfc': 2.7.16
       csstype: 3.1.3
+
+  vuedraggable@2.24.0:
+    dependencies:
+      sortablejs: 1.15.6
 
   walk-back@2.0.1: {}
 
