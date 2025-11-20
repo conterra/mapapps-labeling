@@ -14,10 +14,10 @@
 /// limitations under the License.
 ///
 
-import { generalize, planarLength, geodesicLength } from "esri/geometry/geometryEngineAsync";
-import Polyline from "esri/geometry/Polyline";
-import Graphic from "esri/Graphic";
-import Point from "esri/geometry/Point";
+import { generalize, planarLength, geodesicLength } from "@arcgis/core/geometry/geometryEngineAsync";
+import Polyline from "@arcgis/core/geometry/Polyline";
+import Graphic from "@arcgis/core/Graphic";
+import Point from "@arcgis/core/geometry/Point";
 
 import { MapWidgetModel } from "map-widget/api";
 import { GeneralizationConfig } from "../../types/GeneralizationConfig";

@@ -14,20 +14,20 @@
 /// limitations under the License.
 ///
 
-import Graphic from "esri/Graphic";
-import Draw from "esri/views/draw/Draw";
-import Point from "esri/geometry/Point";
-import Extent from "esri/geometry/Extent";
-import { geodesicLength, planarLength } from "esri/geometry/geometryEngine";
+import Graphic from "@arcgis/core/Graphic";
+import Draw from "@arcgis/core/views/draw/Draw";
+import Point from "@arcgis/core/geometry/Point";
+import Extent from "@arcgis/core/geometry/Extent";
+import { geodesicLength, planarLength } from "@arcgis/core/geometry/geometryEngine";
 import LabelCreator from "./LabelCreator";
-import { watch } from "esri/core/reactiveUtils";
+import { watch } from "@arcgis/core/core/reactiveUtils";
 import { Observers, createObservers } from "apprt-core/Observers";
 import async from "apprt-core/async";
 
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import LabelingModel from "./LabelingModel";
 import { MapWidgetModel } from "map-widget/api";
-import Collection from "esri/core/Collection";
+import Collection from "@arcgis/core/core/Collection";
 
 export default class LabelingController {
 
