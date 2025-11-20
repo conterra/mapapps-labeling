@@ -16,10 +16,10 @@
 
 -->
 <template>
-    <div class="labelingWidgetContainer">
-        <div class="__selections-div">
-            <div>
-                <h4>{{ i18n.selectionTitle }}</h4>
+    <div class="ct-labeling-widget">
+        <div class="ct-labeling-widget__selections">
+            <v-sheet class="mb-1">
+                <h3>{{ i18n.selectionTitle }}</h3>
                 <v-autocomplete
                     v-model="selectedLayer"
                     :items="layers"
@@ -31,33 +31,47 @@
                     hide-details
                     class="pt-0 mt-0 pb-2"
                 />
-            </div>
-            <div>
-                <div v-show="edit">
-                    <v-sheet elevation="12">
-                        <v-btn
-                            id="iconRight"
-                            icon
-                            small
-                            @click="edit = !edit"
-                        >
-                            <v-icon>close</v-icon>
-                        </v-btn>
-                        <div id="editText">
-                            <v-text-field
-                                v-model="editedField.prefix"
-                                :label="i18n.prefix"
-                            />
-                            <v-text-field
-                                v-model="editedField.postfix"
-                                :label="i18n.postfix"
-                            />
-                        </div>
-                    </v-sheet>
+            </v-sheet>
+            <v-sheet
+                v-show="edit"
+                class="my-1 ct-labeling-widget__edit-section"
+            >
+                <div class="align-right">
+                    <v-tooltip
+                        top
+                        open-delay="800"
+                    >
+                        <template #activator="{ on }">
+                            <v-btn
+                                class="ct-labeling-widget__edit-close-section mr-2"
+                                icon
+                                small
+                                :aria-label="i18n.finishEditingAttributeLabel"
+                                v-on="on"
+                                @click="edit = !edit"
+                            >
+                                <!--TODO: maybe change Icon!-->
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ i18n.finishEditingAttributeLabel }}</span>
+                    </v-tooltip>
                 </div>
-                <h4>{{ i18n.selectionFields }}</h4>
+                <div class="ct-labeling-widget__edit-inputs">
+                    <v-text-field
+                        v-model="editedField.prefix"
+                        :label="i18n.prefix"
+                    />
+                    <v-text-field
+                        v-model="editedField.postfix"
+                        :label="i18n.postfix"
+                    />
+                </div>
+            </v-sheet>
+            <v-sheet class="my-1">
+                <h3>{{ i18n.selectionFields }}</h3>
+                <!--TODO: Element not focusable with keyboard, even when not disabled-->
                 <v-select
-                    id="autocomplete"
                     v-model="selectedFields"
                     :items="fields"
                     rounded
@@ -66,13 +80,13 @@
                     :label="i18n.selectionFields"
                     item-text="name"
                     return-object
-                    class="draggableSelect pt-1 mt-0"
+                    class="ct-labeling-widget__draggable-select pt-1 mt-0"
                     clearable
                     :disabled="!selectedLayer"
                 >
                     <template #selection="data">
                         <draggable
-                            :id="data.index"
+                            :id="`ct-labeling-attribute-${data.index}`"
                             :list="selectedFields"
                             v-bind="dragOptionsChips"
                             :move="move"
@@ -91,27 +105,48 @@
 
                                 <span>{{ data.item.name }}</span>
                                 <span>
-                                    <v-btn
-                                        icon
-                                        @click="setEdit(data.item)"
+                                    <v-tooltip
+                                        top
+                                        open-delay="800"
                                     >
-                                        <v-icon small>edit</v-icon>
-                                    </v-btn>
-                                    <v-btn
-                                        icon
-                                        @click="remove(data.item)"
+                                        <template #activator="{ on }">
+                                            <v-btn
+                                                icon
+                                                :aria-label="i18n.editAttributeLabel"
+                                                v-on="on"
+                                                @click="setEdit(data.item)"
+                                            >
+                                                <v-icon small>edit</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ i18n.editAttributeLabel }}</span>
+                                    </v-tooltip>
+                                    <v-tooltip
+                                        top
+                                        open-delay="800"
                                     >
-                                        <v-icon small>close</v-icon>
-                                    </v-btn>
+                                        <template #activator="{ on }">
+                                            <v-btn
+                                                icon
+                                                :aria-label="i18n.deleteAttributeLabel"
+                                                v-on="on"
+                                                @click="remove(data.item)"
+                                            >
+                                                <v-icon small>close</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ i18n.deleteAttributeLabel }}</span>
+                                    </v-tooltip>
                                 </span>
                             </v-chip>
                         </draggable>
                     </template>
                 </v-select>
-            </div>
+            </v-sheet>
         </div>
-        <div class="__controls-div">
-            <div>
+        <v-divider />
+        <div class="ct-labeling-widget__controls-div">
+            <div class="my-1">
                 <v-switch
                     v-model="showFeatureEdgeLengths"
                     class="controls circumference-switch"
@@ -122,23 +157,18 @@
             </div>
             <div>
                 <v-btn
-                    v-if="!active"
                     color="primary"
+                    :aria-pressed="active"
+                    :disabled="selectedFields.length === 0"
                     @click.native="setLabeling"
                 >
-                    <v-icon>icon-play</v-icon>
-                    {{ i18n.labeling.start }}
+                    <v-icon>{{ !active ? "icon-play" : "icon-pause" }}</v-icon>
+                    {{ !active ? i18n.labeling.start : i18n.labeling.stop }}
                 </v-btn>
                 <v-btn
-                    v-else
-                    color="primary"
-                    @click.native="setLabeling"
-                >
-                    <v-icon>icon-pause</v-icon>
-                    {{ i18n.labeling.stop }}
-                </v-btn>
-                <v-btn
-                    color="secondary"
+                    color="error"
+                    outline
+                    :disabled="!selectedLayer || (selectedLayer && selectedFields.length === 0)"
                     @click.native="deleteLabel"
                 >
                     <v-icon>icon-trashcan-detailed</v-icon>
