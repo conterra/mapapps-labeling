@@ -135,6 +135,23 @@
                     "providing": "dn_labeling.LabelingController"
                 }
             ]
-		}
+		},
+        {
+            "name": "LabelingActionDefinitionFactory",
+            "provides": [
+                "toc.ActionDefinitionFactory"
+            ],
+            "references": [
+                {
+                    "name": "_tool",
+                    "providing": "ct.tools.Tool",
+                    "filter": "(id=labelingToggleTool)"
+                },
+                {
+                    "name": "_labelingModel",
+                    "providing": "dn_labeling.LabelingModel"
+                }
+            ]
+        }
 	]
 }

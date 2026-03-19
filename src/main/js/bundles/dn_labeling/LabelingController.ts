@@ -368,14 +368,16 @@ export default class LabelingController {
         if (result.features.length === 0)
             return;
 
-        const feature = result.features[0];
+        result.features.forEach(feature => {
 
-        this.addFieldLabelsToFeature(feature);
+            this.addFieldLabelsToFeature(feature);
 
-        if (model.showFeatureEdgeLengths && feature.geometry.type === "polygon") {
-            this.labelCreator.getEdgeLengthLabels(feature)
-                .then(labels => labels.forEach((label) => this.addLabelToMap(label, feature, "edge")));
-        }
+            if (model.showFeatureEdgeLengths && feature.geometry.type === "polygon") {
+                this.labelCreator.getEdgeLengthLabels(feature)
+                    .then(labels => labels.forEach((label) => this.addLabelToMap(label, feature, "edge")));
+            }
+
+        });
     }
 
     private addFieldLabelsToFeature(feature): void {
@@ -439,6 +441,13 @@ export default class LabelingController {
         }
         this._mapWidgetModel.view.graphics.add(graphic);
 
+    }
+
+    public labelAllFeatures(): void {
+        const layer = this._labelingModel.selectedLayer;
+        const queryParams = layer.createQuery();
+        queryParams.where = "1=1";
+        layer.queryFeatures(queryParams).then(this.addLabelsToFoundFeature.bind(this));
     }
 
     public deleteAllLabels(): void {
