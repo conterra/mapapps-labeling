@@ -74,6 +74,9 @@ export default class LabelingController {
             this.mapObservers.destroy();
             this.mapObservers = undefined;
         }
+
+        this._labelingModel!.active = false;
+        this.deactivateDrawing();
     }
 
     private createModelObservers(): Observers {
