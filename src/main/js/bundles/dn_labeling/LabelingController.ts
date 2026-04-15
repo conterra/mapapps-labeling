@@ -444,6 +444,32 @@ export default class LabelingController {
 
     }
 
+    public labelAllFeatures(): void {
+        const model = this._labelingModel;
+        const layer = model?.selectedLayer;
+        let expression = "";
+
+        const size = Array.from(model.selectedFields).length;
+
+        model?.selectedFields.forEach(function(labelDef, idx){
+            if (labelDef.prefix || labelDef.postfix) {
+                expression = expression.concat((labelDef.prefix ? "`" + labelDef.prefix + "` + " : "") + "$feature." + labelDef.name
+                + (labelDef.postfix ? " + ` " + labelDef.postfix + "` " : ""));
+            } else if (model.allowEmptyPrefix) {
+                expression = expression.concat("$feature." + labelDef.name);
+            }
+            if(idx < size - 1){
+                expression = expression.concat(" + TextFormatting.NewLine + ");
+            }
+        });
+
+        const labelClass = model?.labelClass;
+
+        labelClass.labelExpressionInfo.expression = expression;
+
+        layer!.labelingInfo = labelClass;
+    }
+
     public deleteAllLabels(): void {
         for (const graphic of this._fieldLabels) {
             this._mapWidgetModel.view.graphics.remove(graphic.graphic);
@@ -451,6 +477,9 @@ export default class LabelingController {
         for (const graphic of this._edgeLabels) {
             this._mapWidgetModel.view.graphics.remove(graphic.graphic);
         }
+        const model = this._labelingModel;
+        const layer = model?.selectedLayer;
+        layer!.labelingInfo = "";
     }
 
     private getView(): Promise<__esri.MapView | __esri.SceneView> {

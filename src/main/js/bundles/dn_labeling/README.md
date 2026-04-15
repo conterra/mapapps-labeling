@@ -34,6 +34,24 @@ Additonally, the edges of the features can be measured and labeled accordingly.
             "size": 12
         }
     },
+    "labelClass": {
+        "symbol": {
+            "type": "text",
+            "color": "black",
+            "haloColor": "white",
+            "haloSize": 1,
+            "font": {
+                "family": "Noto Sans",
+                "size": 14
+            }
+        },
+        "labelPlacement": "above-right",
+        "labelExpressionInfo": {
+            "expression": "[OBJECTID]"
+        },
+        "maxScale": 0,
+        "minScale": 25000000
+    },
     "lengthUnit": "meters",
     "generalization": {
         "maxDeviationUnit": "meters",
@@ -51,6 +69,7 @@ Additonally, the edges of the features can be measured and labeled accordingly.
 | allowEmptyPrefix                     | Boolean            | ```true``` &#124; ```false``` | ```false```    | Allows/prohibits use of empty prefix slots.                                                                                                                                           |
 | hoverSymbol                          | SimpleMarkerSymbol |                               |                | Marker placed at the cursor to symbolize activity state. See [SimpleMarkerSymbol](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-SimpleMarkerSymbol.html) |
 | textSymbol                           | TextSymbol         |                               |                | Styling applied to labels. See [TextSymbol](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html)                                               |
+| labelClass                           | LabelClass         |                               |                | Styling applied to the labelinginfo of a layer. See: [LengthUnit](https://developers.arcgis.com/javascript/latest/references/core/layers/support/LabelClass/
 | lengthUnit                           | LengthUnit         |                               | ```"meters"``` | Unit to calculate in. See: [LengthUnit](https://developers.arcgis.com/javascript/latest/api-reference/esri-core-units.html#LengthUnit)                                                |
 | generalization.maxDeviationUnit      | LengthUnit         |                               | ```"meters"``` | Unit to calculate in. See: [LengthUnit](https://developers.arcgis.com/javascript/latest/api-reference/esri-core-units.html#LengthUnit)                                                |
 | generalization.maxDeviation          | Number             |                               | ```0.5```      | Threshold for generalization in configured unit.                                                                                                                                      |

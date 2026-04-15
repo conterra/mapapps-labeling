@@ -52,7 +52,8 @@ export default {
         labeling: {
             start: "Beschriften Starten",
             stop: "Beschriften beenden",
-            delete: "Beschriftungen löschen"
+            delete: "Beschriftungen löschen",
+            labelAll: "Alle Features beschriften"
         },
 
         lengthUnitAbbreviations: {
