@@ -50,7 +50,8 @@ const i18n = {
             labeling: {
                 start: "Start Labeling",
                 stop: "Stop Labeling",
-                delete: "Delete Labels"
+                delete: "Delete Labels",
+                labelAll: "Label all features"
             },
 
             lengthUnitAbbreviations: {

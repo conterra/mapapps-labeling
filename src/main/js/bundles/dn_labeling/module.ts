@@ -20,3 +20,4 @@ export { default as LabelCreator } from "./LabelCreator";
 export { default as LabelingController } from "./LabelingController";
 export { default as Config } from "./LabelingModel";
 export { default as LabelingWidgetFactory } from "./LabelingWidgetFactory";
+export { default as LabelingActionDefinitionFactory } from "./LabelingActionDefinitionFactory";

@@ -174,6 +174,14 @@
                     <v-icon>icon-trashcan-detailed</v-icon>
                     {{ i18n.labeling.delete }}
                 </v-btn>
+                <v-btn
+                    color="primary"
+                    :disabled="!selectedLayer || (selectedLayer && selectedFields.length === 0)"
+                    @click.native="setLabelAll"
+                >
+                    <v-icon>icon-arrow-double-right</v-icon>
+                    {{ i18n.labeling.labelAll }}
+                </v-btn>
             </div>
         </div>
     </div>
@@ -246,6 +254,10 @@
             },
             deleteLabel() {
                 this.$emit("delete");
+            },
+            setLabelAll() {
+                this.active = false;
+                this.$emit("label_all");
             },
             remove(item) {
                 this.selectedFields.splice(this.selectedFields.indexOf(item), 1);

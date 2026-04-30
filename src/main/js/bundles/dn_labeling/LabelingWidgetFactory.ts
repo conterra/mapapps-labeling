@@ -54,6 +54,10 @@ export default class LabelingWidgetFactory {
             controller.deleteAllLabels();
         });
 
+        vm.$on("label_all", () => {
+            controller.labelAllFeatures();
+        });
+
         this.labelingBinding = Binding.for(vm, labelingModel)
             .syncAll("active", "selectedLayer", "selectedFields", "showFeatureEdgeLengths", "edgeLengthsDisabled")
             .syncAllToLeft("layers", "fields")
