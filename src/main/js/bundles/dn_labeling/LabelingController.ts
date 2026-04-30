@@ -273,7 +273,7 @@ export default class LabelingController {
     }
 
     private deactivateDrawing(): void {
-        this.draw.reset();
+        this.draw?.reset();
         this.drawAction = null;
         this.deleteHoverGraphic();
     }
