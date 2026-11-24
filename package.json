@@ -1,7 +1,7 @@
 {
     "name": "mapapps-labeling",
-    "description": "test build",
-    "version": "0.0.1",
+    "version": "1.3.3-SNAPSHOT",
+    "private": true,
     "license": "Apache-2.0",
     "scripts": {
       "check-licenses": "tsx ./src/support/js/check-licenses.ts",
@@ -11,9 +11,12 @@
       "e2e-test:headed": "playwright test --headed",
       "e2e-test:ui": "playwright test --ui"
     },
-    "dependencies": {
+    "peerDependencies": {
         "@arcgis/core": "4.33.14",
         "vue": "2.7.16"
+    },
+    "dependencies": {
+        "vuedraggable": "2.24.0"
     },
     "devDependencies": {
         "@conterra/ct-mapapps-typings": "4.20.3",
@@ -44,8 +47,7 @@
         "tsx": "^4.20.5",
         "typescript": "5.9.3",
         "vite": "7.3.5",
-        "vue-template-compiler": "2.7.16",
-        "vuedraggable": "2.24.0"
+        "vue-template-compiler": "2.7.16"
     },
-    "packageManager": "pnpm@11.8.0"
+    "packageManager": "pnpm@11.28.9"
 }

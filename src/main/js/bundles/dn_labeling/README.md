@@ -3,6 +3,8 @@
 The Labeling bundle allows the user to label features. Contents of the labels is based on the available fields of the feature layers.
 Additonally, the edges of the features can be measured and labeled accordingly.
 
+The bundle compiles in [vuedraggable](https://github.com/SortableJS/Vue.Draggable) (MIT, Copyright (c) 2016-2019 David Desmaisons) and its dependency [sortablejs](https://github.com/SortableJS/Sortable) (MIT, Copyright (c) 2019 All contributors to Sortable). Their license texts are shipped with the bundle in `licenses/<package>/`.
+
 ## Usage
 1. Add the bundle "dn_labeling" to your app.
 2. Configure the bundle if desired.

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
 const mapapps = require('ct-mapapps-gulp-js');
@@ -132,6 +133,55 @@ mapappsBrowserSync.registerTask({
     },
 }, gulp);
 
+// Licenses of npm dependencies bundled via "npmDependencies" in a build.config.js.
+// The code of the npm dependencies (including their transitive dependencies) is
+// shipped inside the bundle, so their license texts are shipped as well (licenses/<package>/).
+// npm dependency -> bundles using it
+const npmBundleDeps = {
+    "vuedraggable": ["dn_labeling"]
+};
+
+// Returns the npm packages compiled into a built bundle (name -> package directory),
+// read from the source maps written by the rollup build.
+function bundledNpmPackages(bundleDir) {
+    const packages = new Map();
+    const maps = fs.readdirSync(bundleDir).filter((file) => file.endsWith(".js.map"));
+    if (!maps.length) {
+        throw new Error(`No source maps in ${bundleDir}: cannot determine the bundled npm packages.`);
+    }
+    maps.forEach((file) => {
+        const {sources = [], sourceRoot = ""} = JSON.parse(fs.readFileSync(path.join(bundleDir, file), "utf8"));
+        sources.forEach((source) => {
+            const match = source.replace(/\\/g, "/").match(/^(.*\/node_modules\/((?:@[^/]+\/)?[^/.][^/]*))\//);
+            if (match) {
+                packages.set(match[2], path.resolve(bundleDir, sourceRoot, match[1]));
+            }
+        });
+    });
+    return packages;
+}
+
+function copyNpmLicenses(bundle) {
+    const bundleDir = path.join(__dirname, "target/webapp/js/bundles", bundle);
+    bundledNpmPackages(bundleDir).forEach((dir, name) => {
+        const files = fs.readdirSync(dir).filter((file) => /^(licen[cs]e|notice)(\..*)?$/i.test(file));
+        if (!files.length) {
+            throw new Error(`No license file found for npm package ${name} in ${dir}.`);
+        }
+        const targetDir = path.join(bundleDir, "licenses", name);
+        fs.mkdirSync(targetDir, {recursive: true});
+        files.forEach((file) => fs.copyFileSync(path.join(dir, file), path.join(targetDir, file)));
+    });
+}
+
+gulp.task("copy-npm-bundle-assets", gulp.parallel(
+    ...[...new Set(Object.values(npmBundleDeps).flat())].map((bundle) =>
+        async function copyBundledNpmLicenses() {
+            copyNpmLicenses(bundle);
+        }
+    )
+));
+
 gulp.task("build",
     gulp.series(
         "copy-resources",
@@ -140,7 +190,8 @@ gulp.task("build",
             "js-transpile",
             "rollup-build",
             "themes-compile"
-        )
+        ),
+        "copy-npm-bundle-assets"
     )
 );
 
