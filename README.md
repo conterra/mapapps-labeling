@@ -31,3 +31,18 @@ $ mvn compile -Denv=dev -Pinclude-mapapps-deps
 # run unit tests
 $ mvn test -P run-js-tests,include-mapapps-deps
 ```
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+### Third-party software
+
+The following third-party software is compiled into the bundles of this project and distributed with them:
+
+| Component | Used in bundle | License |
+|---|---|---|
+| [vuedraggable](https://github.com/SortableJS/Vue.Draggable) 2.24.0 | `dn_labeling` | MIT, Copyright (c) 2016-2019 David Desmaisons |
+| [sortablejs](https://github.com/SortableJS/Sortable) 1.15.6 (dependency of vuedraggable) | `dn_labeling` | MIT, Copyright (c) 2019 All contributors to Sortable |
+
+The license texts are shipped with the bundles in `licenses/<component>/`.
